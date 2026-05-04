@@ -1,9 +1,28 @@
-cmake_minimum_required(VERSION 3.17)
-project(ILikeMyIceCrushed VERSION 0.6.7 LANGUAGES CXX)
+cmake_minimum_required(VERSION 3.10)
+
+
+project(IceSlide VERSION 1.0 LANGUAGES CXX)
+
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
-add_compile_options(-Wall -Wextra -Wpedantic)
+
+# DEPENDENCIES: OpenGL & GLFW
+# 
+# SYSTEM INSTALLATION INSTRUCTIONS (Debian/Ubuntu/WSL):
+# If GLFW and OpenGL are not installed on the system, install them by running:
+#   sudo apt update
+#   sudo apt install libglfw3-dev libgl1-mesa-dev xorg-dev
+
+
+find_package(OpenGL REQUIRED)
+find_package(glfw3 REQUIRED)
+
+
+set(CORE_SOURCES
+    src/core/Board.cpp
+    src/core/BoardAlg.cpp
+)
 
 set(IMGUI_SOURCES
     src/imgui/imgui.cpp
@@ -15,11 +34,19 @@ set(IMGUI_SOURCES
     src/imgui/imgui_impl_opengl3.cpp
 )
 
-set(DRIVER
-    src/main.cpp
+file(GLOB_RECURSE GUI_SOURCES "src/gui/*.cpp")
+
+add_executable(${PROJECT_NAME} 
+    ${CORE_SOURCES} 
+    ${GUI_SOURCES} 
     ${IMGUI_SOURCES}
 )
+target_include_directories(${PROJECT_NAME} PRIVATE 
+    ${CMAKE_SOURCE_DIR}/include
+    ${CMAKE_SOURCE_DIR}/src/imgui
+)
 
-add_executable(appgui ${DRIVER})
-
-target_include_directories(appgui PRIVATE src/gui/imgui)
+target_link_libraries(${PROJECT_NAME} PRIVATE 
+    OpenGL::GL
+    glfw
+)
