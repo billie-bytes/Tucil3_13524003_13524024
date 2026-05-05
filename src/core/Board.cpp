@@ -2,6 +2,7 @@
 #include <iostream>
 #include <string>
 #include <cctype>
+#include <fstream>
 Board::Board(int panjang, int lebar):panjang(panjang),lebar(lebar),ord(1){
     matrix = new int*[panjang];
     for(int i = 0; i<panjang; i++){
@@ -141,6 +142,10 @@ Board* Board::create(std::ifstream& config){
         }
     }
     return board;
+}
+
+int** Board::getMatrix() const {
+    return matrix;
 }
 
 int Board::moveButNotRly(Direction d){

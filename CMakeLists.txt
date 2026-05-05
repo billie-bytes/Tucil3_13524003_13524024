@@ -6,6 +6,7 @@ project(IceSlide VERSION 1.0 LANGUAGES CXX)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
+set(CMAKE_BUILD_TYPE Debug)
 
 # DEPENDENCIES: OpenGL & GLFW
 # 
@@ -35,11 +36,13 @@ set(IMGUI_SOURCES
 )
 
 file(GLOB_RECURSE GUI_SOURCES "src/gui/*.cpp")
+file(GLOB_RECURSE RENDER_SOURCES "src/gui/renderer/*.cpp")
 
 add_executable(${PROJECT_NAME} 
     ${CORE_SOURCES} 
     ${GUI_SOURCES} 
     ${IMGUI_SOURCES}
+    ${RENDER_SOURCES}
 )
 target_include_directories(${PROJECT_NAME} PRIVATE 
     ${CMAKE_SOURCE_DIR}/include

@@ -13,17 +13,16 @@ enum class Direction : int {
 
 class Board {
 private:
-    int panjang;
-    int lebar;
     int** matrix;
     Board(int panjang, int lebar);
 
     int ord;
     std::vector<std::array<int, 3>> orderedTiles; //consists of [x,y,order]
     bool ifOrdered();
-    
-    
-    public:
+
+public:
+    int panjang;
+    int lebar;
     int pinX;
     int pinY;
     int winX;
@@ -35,6 +34,7 @@ private:
     void placeWin(int x, int y);
     static Board* create(int panjang, int lebar);
     static Board* create(std::ifstream& config);
+    int** getMatrix() const ;
 
     /**
      * @brief moveButNotRly itu cuma buat cek apakah move itu valid, and cek cost nya.

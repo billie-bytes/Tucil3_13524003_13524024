@@ -1,8 +1,14 @@
 #include "imgui.h"
+#include "imgui_internal.h"
 #include "imgui_impl_glfw.h"
 #include "imgui_impl_opengl3.h"
 #include <GLFW/glfw3.h>
-#include <stdio.h>
+#include <iostream>
+#include <fstream>
+#include <string>
+
+
+#include "../../include/gui/render/BoardView.hpp"
 
 static void glfw_error_callback(int error, const char* description) {
     fprintf(stderr, "GLFW Error %d: %s\n", error, description);
@@ -35,14 +41,47 @@ int main(int, char**) {
     ImGui_ImplGlfw_InitForOpenGL(window, true);
     ImGui_ImplOpenGL3_Init(glsl_version);
 
+    std::ifstream config("../configs/config1.txt");    
+    if (!config.is_open()) {
+        std::cerr << "Error: Could not open the file" << std::endl;
+        return 1;
+    }
+
+    Board* b = Board::create(config);
+    if(b==nullptr){
+        std::cerr << "Error: Board was not properly initialized" << std::endl;
+        return 1;
+    }
+    std::cout << "Board initialized" << std::endl; 
+    
+    
+    bool first_frame = true;
     while (!glfwWindowShouldClose(window)) {
         glfwPollEvents();
         ImGui_ImplOpenGL3_NewFrame();
         ImGui_ImplGlfw_NewFrame();
         ImGui::NewFrame();
 
+
+        ImGuiID main_id = ImGui::GetID("MainDockSpace");
+        ImGui::DockSpaceOverViewport(main_id, ImGui::GetMainViewport());
+
+        if(first_frame){
+            first_frame = false;
+            ImGui::DockBuilderRemoveNode(main_id);
+            ImGui::DockBuilderAddNode(main_id,ImGuiDockNodeFlags_DockSpace);
+            ImGui::DockBuilderSetNodeSize(main_id, ImGui::GetMainViewport()->Size);  
+            ImGuiID left_id = ImGui::DockBuilderSplitNode(main_id, ImGuiDir_Left, 0.25f, nullptr, &main_id); 
+            ImGuiID right_id = main_id;                                                                                                                                                                          
+            ImGui::DockBuilderDockWindow("I Like My Ice... Crushed", left_id);
+            ImGui::DockBuilderDockWindow("Board",right_id);
+
+        }
+
         ImGui::Begin("I Like My Ice... Crushed");
         ImGui::End();
+        renderer::renderBoard(*b);
+
 
 
         ImGui::Render();
