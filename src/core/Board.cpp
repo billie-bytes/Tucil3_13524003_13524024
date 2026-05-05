@@ -74,6 +74,19 @@ void Board::placeMainChar(int x, int y){
     pinY = y;
 }
 
+void Board::placeWin(int x, int y){
+    if(x<0||y<0){
+        std::cout << "Where are you putting it, blud" << std::endl;
+        return;
+    }
+    if(matrix[x][y] == 999 || matrix[x][y] == 998){
+        std::cout << "Those squares already have lava or a wall, buster" << std::endl;
+        return;
+    }
+    winX = x;
+    winY = y;
+}
+
 Board::~Board(){
     for(int i = 0; i<panjang; ++i){
         delete[] matrix[i];
@@ -115,6 +128,7 @@ Board* Board::create(std::ifstream& config){
             } else if(tile == 'L'){
                 board->placeLava(i, j);
             } else {
+                if(tile=='O')board->placeWin(i,j);
                 board->placeValue(i, j, cost);
                 
                 if(tile == 'Z'){

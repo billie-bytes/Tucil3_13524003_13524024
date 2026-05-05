@@ -23,11 +23,16 @@ private:
     int ord;
     std::vector<std::array<int, 3>> orderedTiles; //consists of [x,y,order]
     bool ifOrdered();
+
+
+    int winX;
+    int winY;
 public:
     void placeWall(int x, int y);
     void placeLava(int x, int y);
     void placeValue(int x, int y, int val);
     void placeMainChar(int x, int y);
+    void placeWin(int x, int y);
     static Board* create(int panjang, int lebar);
     static Board* create(std::ifstream& config);
 
