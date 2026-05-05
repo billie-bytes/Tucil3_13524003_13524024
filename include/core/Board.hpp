@@ -18,16 +18,16 @@ private:
     int** matrix;
     Board(int panjang, int lebar);
 
-    int pinX;
-    int pinY;
     int ord;
     std::vector<std::array<int, 3>> orderedTiles; //consists of [x,y,order]
     bool ifOrdered();
-
-
+    
+    
+    public:
+    int pinX;
+    int pinY;
     int winX;
     int winY;
-public:
     void placeWall(int x, int y);
     void placeLava(int x, int y);
     void placeValue(int x, int y, int val);
