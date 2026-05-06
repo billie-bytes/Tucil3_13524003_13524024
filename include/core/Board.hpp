@@ -2,7 +2,7 @@
 #include <fstream>
 #include <vector>
 #include <array>
-
+#include <unordered_map>
 
 enum class Direction : int {
     UP,
@@ -11,22 +11,27 @@ enum class Direction : int {
     RIGHT
 };
 
+enum Tile {
+    LAVA = 998,
+    WALL = 999,
+};
+
 class Board {
 private:
     int** matrix;
     Board(int panjang, int lebar);
-
-    int ord;
+    
     bool ifOrdered();
     
-    public:
-    std::vector<std::array<int, 3>> orderedTiles; //consists of [x,y,order]
+public:
+    std::unordered_map<int, std::unordered_map<int, int>> orderedTiles; // orderedTiles[x][y] = order on position x,y tile 
     int panjang;
     int lebar;
     int pinX;
     int pinY;
     int winX;
     int winY;
+    int ord;
     void placeWall(int x, int y);
     void placeLava(int x, int y);
     void placeValue(int x, int y, int val);
