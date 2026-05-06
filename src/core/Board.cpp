@@ -218,3 +218,35 @@ int Board::move(Direction d){
     }
     return cost;
 }
+
+Board& Board::operator=(const Board& other) {
+    if (this == &other) {
+        return *this;
+    }
+
+    if (matrix != nullptr) {
+        for(int i = 0; i < panjang; ++i){
+            delete[] matrix[i];
+        }
+        delete[] matrix;
+    }
+
+    panjang = other.panjang;
+    lebar = other.lebar;
+    pinX = other.pinX;
+    pinY = other.pinY;
+    winX = other.winX;
+    winY = other.winY;
+    ord = other.ord;
+    orderedTiles = other.orderedTiles;
+
+    matrix = new int*[panjang];
+    for(int i = 0; i < panjang; ++i){
+        matrix[i] = new int[lebar];
+        for(int j = 0; j < lebar; ++j){
+            matrix[i][j] = other.matrix[i][j];
+        }
+    }
+
+    return *this;
+}

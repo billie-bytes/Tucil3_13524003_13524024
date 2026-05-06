@@ -17,10 +17,10 @@ private:
     Board(int panjang, int lebar);
 
     int ord;
-    std::vector<std::array<int, 3>> orderedTiles; //consists of [x,y,order]
     bool ifOrdered();
-
-public:
+    
+    public:
+    std::vector<std::array<int, 3>> orderedTiles; //consists of [x,y,order]
     int panjang;
     int lebar;
     int pinX;
@@ -50,5 +50,6 @@ public:
     int moveButNotRly(Direction d);
     int move(Direction d);
     ~Board();
+    Board& operator=(const Board& other);
     
 };

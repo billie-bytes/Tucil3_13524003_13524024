@@ -6,8 +6,16 @@
 #include "../../imgui/imgui_impl_opengl3.h"
 #include <GLFW/glfw3.h>
 #include <stdio.h>
+#include <vector>
+#include <array>
+#include <string>
 
-
+static int returnOrder(int x, int y, std::vector<std::array<int, 3>>& v){
+    for(size_t i =0;i < v.size(); ++i){
+        if(x==v[i][0]&&y==v[i][1]) return v[i][2];
+    }
+    return -1;
+}
 namespace renderer {
 
     ImGuiID renderBoard(Board& b){
@@ -39,7 +47,20 @@ namespace renderer {
         for(int i = 0; i<b.panjang; i++){
 
             for(int j = 0; j<b.lebar; j++){
-                draw_list->AddRectFilled(rectTopLeft,rectBotRight,IM_COL32(67,67,67,255));
+                if(matrix[i][j] < 998){
+                    draw_list->AddRectFilled(rectTopLeft,rectBotRight,IM_COL32(67,67,67,200));
+                    draw_list->AddRect(rectTopLeft,rectBotRight,IM_COL32(40,40,40,200));
+                }
+
+                if(matrix[i][j] == 998) draw_list->AddRectFilled(rectTopLeft,rectBotRight,IM_COL32(255,0,0,255));
+                if(matrix[i][j] == 999) draw_list->AddRectFilled(rectTopLeft,rectBotRight,IM_COL32(67,67,67,255));
+                if(b.pinX==i&&b.pinY==j) draw_list->AddRectFilled(rectTopLeft,rectBotRight,IM_COL32(0,0,255,255));
+                if(b.winX==i&&b.winY==j) draw_list->AddRectFilled(rectTopLeft,rectBotRight,IM_COL32(0,255,0,255));
+                if(returnOrder(i,j,b.orderedTiles)!=-1){
+                    std::string label = std::to_string(returnOrder(i,j,b.orderedTiles));
+                    draw_list->AddText(NULL,50.0f,rectTopLeft,IM_COL32(255,255,255,255),label.c_str());
+                }
+
                 rectTopLeft.x+=grid_size.x;
                 rectBotRight.x+=grid_size.x;
             }
