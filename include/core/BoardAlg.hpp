@@ -15,6 +15,7 @@
  */
 #pragma once
 #include "Board.hpp"
+#include <cmath>
 
 class SearchNode {
 public:
@@ -37,7 +38,7 @@ struct SearchNodeHash {
 
 struct Neighbor {
     SearchNode node;
-    int totalCost;
+    double totalCost;
     Direction dir;
 
     bool operator>(const Neighbor& rhs) const {
@@ -53,3 +54,7 @@ struct Neighbor {
 std::pair<int, std::vector<Direction>> UCS(Board b, int heuristic);
 std::vector<Direction> GBFS(Board b, int heuristic);
 std::vector<Direction> ASTAR(Board b, int heuristic);
+
+double heuristics(SearchNode node, SearchNode goal, int choice);
+double manhattanDistance(SearchNode node, SearchNode goal);
+double euclideanDistance(SearchNode node, SearchNode goal);
