@@ -34,7 +34,7 @@ void Board::placeLava(int x, int y){
         std::cout << "Can't put lava on the outside wall buster" << std::endl;
         return;
     }
-    matrix[x][y] = 998; //Unique ident for lava cuz 999 is for walls
+    matrix[x][y] = LAVA; //Unique ident for lava cuz WALL is for walls
 }
 
 void Board::placeWall(int x, int y){
@@ -42,12 +42,12 @@ void Board::placeWall(int x, int y){
         std::cout << "Where are you putting it, pal" << std::endl;
         return;
     }
-    if(matrix[x][y]==998){
-        matrix[x][y] = 999;
+    if(matrix[x][y]==LAVA){
+        matrix[x][y] = WALL;
         std::cout << "Replaced the lava at [" << x << "," << y <<"] with a wall" << std::endl;
         return; 
     }
-    matrix[x][y] = 999;
+    matrix[x][y] = WALL;
 }
 
 void Board::placeValue(int x, int y, int value){
@@ -55,7 +55,7 @@ void Board::placeValue(int x, int y, int value){
         std::cout << "Where are you putting it, bud" << std::endl;
         return;
     }
-    if(value == 999 || value == 998){
+    if(value == WALL || value == LAVA){
         std::cout << "Those values are reserved for walls and lavas, bucko" << std::endl;
         return;
     }
@@ -67,7 +67,7 @@ void Board::placeMainChar(int x, int y){
         std::cout << "Where are you putting it, blud" << std::endl;
         return;
     }
-    if(matrix[x][y] == 999 || matrix[x][y] == 998){
+    if(matrix[x][y] == WALL || matrix[x][y] == LAVA){
         std::cout << "Those squares already have lava or a wall, buster" << std::endl;
         return;
     }
@@ -80,7 +80,7 @@ void Board::placeWin(int x, int y){
         std::cout << "Where are you putting it, blud" << std::endl;
         return;
     }
-    if(matrix[x][y] == 999 || matrix[x][y] == 998){
+    if(matrix[x][y] == WALL || matrix[x][y] == LAVA){
         std::cout << "Those squares already have lava or a wall, buster" << std::endl;
         return;
     }
@@ -134,9 +134,13 @@ Board* Board::create(std::ifstream& config){
                 
                 if(tile == 'Z'){
                     board->placeMainChar(i, j);
-                } else if(std::isdigit(tile)){
+                } 
+                
+                if(std::isdigit(tile)){
                     int order = tile - '0';
-                    board->orderedTiles.push_back({i, j, order});
+                    board->orderedTiles[i][j] = order;
+                } else {
+                    board->orderedTiles[i][j] = -1;
                 }
             }
         }
@@ -164,14 +168,14 @@ int Board::moveButNotRly(Direction d){
             case Direction::RIGHT: nextX++; break;
         }
 
-        if(matrix[nextX][nextY] == 999){
+        if(matrix[nextX][nextY] == WALL){
             break; 
         }
 
         pinX = nextX;
         pinY = nextY;
 
-        if(matrix[pinX][pinY] == 998){
+        if(matrix[pinX][pinY] == LAVA){
              pinX = savedX;
              pinY = savedY;
              return -1;
@@ -204,14 +208,14 @@ int Board::move(Direction d){
             case Direction::RIGHT: nextX++; break;
         }
 
-        if(matrix[nextX][nextY] == 999){
+        if(matrix[nextX][nextY] == WALL){
             break; 
         }
 
         pinX = nextX;
         pinY = nextY;
 
-        if(matrix[pinX][pinY] == 998) return -1;
+        if(matrix[pinX][pinY] == LAVA) return -1;
         if(!ifOrdered()) return -1;
         
         cost += matrix[pinX][pinY];
