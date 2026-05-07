@@ -131,9 +131,8 @@ std::pair<int, std::vector<Direction>> UCS(const Board& board, int heuristic){
         auto expanded = expand(board, currentNode, currentCost);
 
         for (const Neighbor& next : expanded) {
-            double estimatedCostOnward = heuristics(next.node, goal, heuristic);
-            if (!dist.count(next.node) || next.totalCost + estimatedCostOnward < dist[next.node]) {
-                dist[next.node] = next.totalCost + estimatedCostOnward;
+            if (!dist.count(next.node) || next.totalCost < dist[next.node]) {
+                dist[next.node] = next.totalCost;
                 parent[next.node] = {currentNode, next.dir};
                 pq.push(next);
             }
@@ -142,10 +141,7 @@ std::pair<int, std::vector<Direction>> UCS(const Board& board, int heuristic){
 
     return {-1, {}};
 }
-std::vector<Direction> GBFS(Board b, int heuristic){
-    return {}; 
-}
-std::pair<int, std::vector<Direction>> ASTAR(const Board& board, const SearchNode& start, const SearchNode& goal){
+std::pair<int, std::vector<Direction>> GBFS(const Board& board, int heuristic){
     SearchNode start(board.pinX, board.pinY, board.ord);
     SearchNode goal(board.winX, board.winY, 0);
     std::priority_queue<Neighbor, std::vector<Neighbor>, std::greater<Neighbor>> pq;
@@ -171,8 +167,47 @@ std::pair<int, std::vector<Direction>> ASTAR(const Board& board, const SearchNod
         auto expanded = expand(board, currentNode, currentCost);
 
         for (const Neighbor& next : expanded) {
-            if (!dist.count(next.node) || next.totalCost < dist[next.node]) {
-                dist[next.node] = next.totalCost;
+            double estimatedCostOnward = heuristics(next.node, goal, heuristic);
+            if (!dist.count(next.node) || estimatedCostOnward < dist[next.node]) {
+                dist[next.node] = estimatedCostOnward;
+                parent[next.node] = {currentNode, next.dir};
+                pq.push(next);
+            }
+        }
+    }
+
+    return {-1, {}};
+}
+
+std::pair<int, std::vector<Direction>> ASTAR(const Board& board, int heuristic){
+    SearchNode start(board.pinX, board.pinY, board.ord);
+    SearchNode goal(board.winX, board.winY, 0);
+    std::priority_queue<Neighbor, std::vector<Neighbor>, std::greater<Neighbor>> pq;
+    std::unordered_map<SearchNode, double, SearchNodeHash> dist;
+    std::unordered_map<SearchNode, std::pair<SearchNode, Direction>, SearchNodeHash> parent;
+
+    pq.push({start, 0.0, Direction::RIGHT});
+
+    dist[start] = 0.0;
+
+    while (!pq.empty()) {
+
+        Neighbor current = pq.top();
+        pq.pop();
+
+        SearchNode currentNode = current.node;
+        int currentCost = current.totalCost;
+
+        if (currentNode == goal) {
+            return {currentCost, reconstructPath(parent, start, goal)};
+        }
+
+        auto expanded = expand(board, currentNode, currentCost);
+
+        for (const Neighbor& next : expanded) {
+            double estimatedCostOnward = heuristics(next.node, goal, heuristic);
+            if (!dist.count(next.node) || next.totalCost + estimatedCostOnward < dist[next.node]) {
+                dist[next.node] = next.totalCost + estimatedCostOnward;
                 parent[next.node] = {currentNode, next.dir};
                 pq.push(next);
             }
