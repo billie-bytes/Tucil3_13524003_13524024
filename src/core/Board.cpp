@@ -3,7 +3,7 @@
 #include <string>
 #include <cctype>
 #include <fstream>
-Board::Board(int panjang, int lebar):panjang(panjang),lebar(lebar),ord(1){
+Board::Board(int panjang, int lebar):panjang(panjang),lebar(lebar),ord(0){
     matrix = new int*[panjang];
     for(int i = 0; i<panjang; i++){
         matrix[i]=new int[lebar]();

@@ -9,6 +9,7 @@
 
 
 #include "../../include/gui/render/BoardView.hpp"
+#include "../../include/gui/render/ControlPanel.hpp"
 
 static void glfw_error_callback(int error, const char* description) {
     fprintf(stderr, "GLFW Error %d: %s\n", error, description);
@@ -48,6 +49,8 @@ int main(int, char**) {
     }
 
     Board* b = Board::create(config);
+    ControlPanel p;
+
     if(b==nullptr){
         std::cerr << "Error: Board was not properly initialized" << std::endl;
         return 1;
@@ -73,13 +76,11 @@ int main(int, char**) {
             ImGui::DockBuilderSetNodeSize(main_id, ImGui::GetMainViewport()->Size);  
             ImGuiID left_id = ImGui::DockBuilderSplitNode(main_id, ImGuiDir_Left, 0.25f, nullptr, &main_id); 
             ImGuiID right_id = main_id;                                                                                                                                                                          
-            ImGui::DockBuilderDockWindow("I Like My Ice... Crushed", left_id);
+            ImGui::DockBuilderDockWindow("Control Panel", left_id);
             ImGui::DockBuilderDockWindow("Board",right_id);
-
         }
 
-        ImGui::Begin("I Like My Ice... Crushed");
-        ImGui::End();
+        renderer::renderPanel(p);
         renderer::renderBoard(*b);
 
 

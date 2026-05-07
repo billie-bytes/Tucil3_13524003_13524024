@@ -8,16 +8,23 @@
 #include <vector>
 #include <string>
 
-
+#define DIRBUFSIZE 128
 class ControlPanel{
-    
+private:
+    Board* board;
+    public:
+    char dirbuf[DIRBUFSIZE];
+
 public:
-    void loadBoard(Board& b, std::ifstream config);
-    void solveBoard(Board& b, std::string algorithm, std::string heuristic);
+    ControlPanel();
+    int algorithm; //0=UCS, 1=A*, 2=GBFS 
+    int heuristic;
+    void loadBoard(std::ifstream& config);
+    void solveBoard();
 };
     
 
 
 namespace renderer {
-    ImGuiID renderPanel();
+    ImGuiID renderPanel(ControlPanel& cp);
 }
