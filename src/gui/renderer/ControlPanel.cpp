@@ -27,6 +27,7 @@ void ControlPanel::loadBoard(std::ifstream& config){
     board_result.first = -1;
     board_result.second.clear();
     result_idx = 0;
+    saved_pin_pos.clear();
 }
 
 
@@ -39,36 +40,24 @@ void ControlPanel::solveBoard(){
         case 1:
             board_result = UCS(*board,heuristic);
             break;
-        case 3:
+        case 2:
             board_result = GBFS(*board, heuristic);
     }
+    saved_pin_pos.push_back({board->pinX,board->pinY});
 }
 
 void ControlPanel::maju(){
     if(board_result.first==-1)return;
     if(result_idx==board_result.second.size()) return;
     board->move(board_result.second[result_idx++]);
+    saved_pin_pos.push_back({board->pinX,board->pinY});
 }
 
 void ControlPanel::mundur(){
     if(board_result.first==-1)return;
     if(result_idx==0) return;
-    Direction move = board_result.second[--result_idx];
-    switch(move){
-        case Direction::UP:
-            board->move(Direction::DOWN);
-            break;
-        case Direction::DOWN:
-            board->move(Direction::UP);
-            break;
-        case Direction::LEFT:
-            board->move(Direction::RIGHT);
-            break;
-        case Direction::RIGHT:
-            board->move(Direction::LEFT);
-            break;
-    }
-    
+    auto [x,y] = saved_pin_pos[--result_idx];
+    board->pinX = x; board->pinY = y;
 }
 
 void ControlPanel::reset(){

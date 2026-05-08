@@ -19,6 +19,10 @@ bool Board::ifOrdered(){
         if (y_it != x_it->second.end()) {
             int targetOrder = y_it->second; 
             
+            if (targetOrder == -1) {
+                return true;
+            }
+            
             if (ord == targetOrder) {
                 ++ord;
                 return true;
@@ -221,7 +225,6 @@ int Board::move(Direction d){
         pinY = nextY;
 
         if(matrix[pinX][pinY] == LAVA) return -1;
-        if(!ifOrdered()) return -1;
         
         cost += matrix[pinX][pinY];
     }

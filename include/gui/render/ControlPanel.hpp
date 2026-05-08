@@ -17,6 +17,7 @@ private:
     char dirbuf[DIRBUFSIZE];
     
     std::pair<int, std::vector<Direction>> board_result;
+    std::vector<std::pair<int, int>> saved_pin_pos;
     size_t result_idx;
 
 

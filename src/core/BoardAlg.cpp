@@ -129,7 +129,7 @@ std::pair<int, std::vector<Direction>> UCS(const Board& board, int heuristic){
         int currentCost = current.totalCost;
 
         if (currentNode == goal) {
-            return {currentCost, reconstructPath(parent, start, goal)};
+            return {currentCost, reconstructPath(parent, start, currentNode)};
         }
 
         auto expanded = expand(board, currentNode, currentCost);
@@ -165,7 +165,7 @@ std::pair<int, std::vector<Direction>> GBFS(const Board& board, int heuristic){
         int currentCost = current.totalCost;
 
         if (currentNode == goal) {
-            return {currentCost, reconstructPath(parent, start, goal)};
+            return {currentCost, reconstructPath(parent, start, currentNode)};
         }
 
         auto expanded = expand(board, currentNode, currentCost);
@@ -203,7 +203,7 @@ std::pair<int, std::vector<Direction>> ASTAR(const Board& board, int heuristic){
         int currentCost = current.totalCost;
 
         if (currentNode == goal) {
-            return {currentCost, reconstructPath(parent, start, goal)};
+            return {currentCost, reconstructPath(parent, start, currentNode)};
         }
 
         auto expanded = expand(board, currentNode, currentCost);
@@ -211,7 +211,7 @@ std::pair<int, std::vector<Direction>> ASTAR(const Board& board, int heuristic){
         for (const Neighbor& next : expanded) {
             double estimatedCostOnward = heuristics(next.node, goal, heuristic);
             if (!dist.count(next.node) || next.totalCost + estimatedCostOnward < dist[next.node]) {
-                dist[next.node] = next.totalCost + estimatedCostOnward;
+                 dist[next.node] = next.totalCost + estimatedCostOnward;
                 parent[next.node] = {currentNode, next.dir};
                 pq.push(next);
             }
