@@ -39,10 +39,11 @@ struct SearchNodeHash {
 struct Neighbor {
     SearchNode node;
     double totalCost;
+    double priority;
     Direction dir;
 
     bool operator>(const Neighbor& rhs) const {
-        return totalCost > rhs.totalCost;
+        return priority> rhs.priority;
     }
 };
 

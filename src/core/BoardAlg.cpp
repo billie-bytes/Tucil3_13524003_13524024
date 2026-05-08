@@ -83,7 +83,7 @@ static std::vector<Neighbor> expand(const Board& board, const SearchNode& curren
             continue;
         }
 
-        neighbors.push_back({SearchNode(nextX, nextY, nextOrd), currentCost + slideCost, d}); // put it in priority queue
+        neighbors.push_back({SearchNode(nextX, nextY, nextOrd), currentCost + slideCost, 0.0, d}); 
     }
 
     return neighbors;
@@ -116,7 +116,8 @@ std::pair<int, std::vector<Direction>> UCS(const Board& board, int heuristic){
     std::unordered_map<SearchNode, double, SearchNodeHash> dist;
     std::unordered_map<SearchNode, std::pair<SearchNode, Direction>, SearchNodeHash> parent;
 
-    pq.push({start, 0.0, Direction::RIGHT});
+
+    pq.push({start, 0.0, 0.0, Direction::RIGHT});
 
     dist[start] = 0.0;
 
@@ -138,13 +139,14 @@ std::pair<int, std::vector<Direction>> UCS(const Board& board, int heuristic){
             if (!dist.count(next.node) || next.totalCost < dist[next.node]) {
                 dist[next.node] = next.totalCost;
                 parent[next.node] = {currentNode, next.dir};
-                pq.push(next);
+                pq.push({next.node, next.totalCost, next.totalCost, next.dir});
             }
         }
     }
 
     return {-1, {}};
 }
+
 std::pair<int, std::vector<Direction>> GBFS(const Board& board, int heuristic){
     SearchNode start(board.pinX, board.pinY, board.ord);
     SearchNode goal(board.winX, board.winY, 0);
@@ -152,7 +154,8 @@ std::pair<int, std::vector<Direction>> GBFS(const Board& board, int heuristic){
     std::unordered_map<SearchNode, double, SearchNodeHash> dist;
     std::unordered_map<SearchNode, std::pair<SearchNode, Direction>, SearchNodeHash> parent;
 
-    pq.push({start, 0.0, Direction::RIGHT});
+    // GBFS: Priority is h(n)
+    pq.push({start, 0.0, heuristics(start, goal, heuristic), Direction::RIGHT});
 
     dist[start] = 0.0;
 
@@ -175,7 +178,7 @@ std::pair<int, std::vector<Direction>> GBFS(const Board& board, int heuristic){
             if (!dist.count(next.node) || estimatedCostOnward < dist[next.node]) {
                 dist[next.node] = estimatedCostOnward;
                 parent[next.node] = {currentNode, next.dir};
-                pq.push(next);
+                pq.push({next.node, next.totalCost, estimatedCostOnward, next.dir});
             }
         }
     }
@@ -190,7 +193,8 @@ std::pair<int, std::vector<Direction>> ASTAR(const Board& board, int heuristic){
     std::unordered_map<SearchNode, double, SearchNodeHash> dist;
     std::unordered_map<SearchNode, std::pair<SearchNode, Direction>, SearchNodeHash> parent;
 
-    pq.push({start, 0.0, Direction::RIGHT});
+    // A*: Priority is f(n) = g(n) + h(n)
+    pq.push({start, 0.0, heuristics(start, goal, heuristic), Direction::RIGHT});
 
     dist[start] = 0.0;
 
@@ -211,9 +215,9 @@ std::pair<int, std::vector<Direction>> ASTAR(const Board& board, int heuristic){
         for (const Neighbor& next : expanded) {
             double estimatedCostOnward = heuristics(next.node, goal, heuristic);
             if (!dist.count(next.node) || next.totalCost + estimatedCostOnward < dist[next.node]) {
-                 dist[next.node] = next.totalCost + estimatedCostOnward;
+                dist[next.node] = next.totalCost + estimatedCostOnward;
                 parent[next.node] = {currentNode, next.dir};
-                pq.push(next);
+                pq.push({next.node, next.totalCost, next.totalCost + estimatedCostOnward, next.dir});
             }
         }
     }
