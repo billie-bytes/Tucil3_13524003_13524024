@@ -11,18 +11,23 @@ Board::Board(int panjang, int lebar):panjang(panjang),lebar(lebar),ord(0){
 }
 
 bool Board::ifOrdered(){
-    for(std::size_t i = 0; i<orderedTiles.size(); ++i){
-        if(orderedTiles[i][0] == pinX && orderedTiles [i][1] == pinY){
-            if(ord==orderedTiles[i][2]){
+    auto x_it = orderedTiles.find(pinX);
+    
+    if (x_it != orderedTiles.end()) {
+        auto y_it = x_it->second.find(pinY);
+        
+        if (y_it != x_it->second.end()) {
+            int targetOrder = y_it->second; 
+            
+            if (ord == targetOrder) {
                 ++ord;
                 return true;
-            }
-            else{
-                return false; // Is an ordered tile, yet arrived out of order
+            } else {
+                return false;
             }
         }
     }
-    return true; // Emang non-ordered tile, atau vector kosong
+    return true;
 }
 
 void Board::placeLava(int x, int y){

@@ -53,12 +53,19 @@ static std::vector<Neighbor> expand(const Board& board, const SearchNode& curren
                 break;
             }
 
-            int order = board.orderedTiles.at(nextX).at(nextY);
-            if (order == nextOrd) {
-                nextOrd++;
-            }
-            else if (order > nextOrd) {
-                slideCost = -1.0;
+            auto x_it = board.orderedTiles.find(nextX);
+            if (x_it != board.orderedTiles.end()) {
+                auto y_it = x_it->second.find(nextY);
+                if (y_it != x_it->second.end()) {
+                    int order = y_it->second;
+                    
+                    if (order == nextOrd) {
+                        nextOrd++;
+                    }
+                    else if (order > nextOrd) {
+                        slideCost = -1.0;
+                    }
+                }
             }
 
             if (slideCost == -1.0) {
@@ -101,9 +108,6 @@ std::vector<Direction> reconstructPath(std::unordered_map<SearchNode, std::pair<
     return path;
 }
 
-std::pair<int, std::vector<Direction>> uniformCostSearch(const Board& board, const SearchNode& start, const SearchNode& goal) {
-    
-}
 
 std::pair<int, std::vector<Direction>> UCS(const Board& board, int heuristic){
     SearchNode start(board.pinX, board.pinY, board.ord);

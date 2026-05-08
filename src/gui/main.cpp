@@ -48,14 +48,8 @@ int main(int, char**) {
         return 1;
     }
 
-    Board* b = Board::create(config);
+    Board* placeholder_board = Board::create(config);
     ControlPanel p;
-
-    if(b==nullptr){
-        std::cerr << "Error: Board was not properly initialized" << std::endl;
-        return 1;
-    }
-    std::cout << "Board initialized" << std::endl; 
     
     
     bool first_frame = true;
@@ -74,14 +68,16 @@ int main(int, char**) {
             ImGui::DockBuilderRemoveNode(main_id);
             ImGui::DockBuilderAddNode(main_id,ImGuiDockNodeFlags_DockSpace);
             ImGui::DockBuilderSetNodeSize(main_id, ImGui::GetMainViewport()->Size);  
-            ImGuiID left_id = ImGui::DockBuilderSplitNode(main_id, ImGuiDir_Left, 0.25f, nullptr, &main_id); 
+            ImGuiID left_id = ImGui::DockBuilderSplitNode(main_id, ImGuiDir_Left, 0.3f, nullptr, &main_id); 
             ImGuiID right_id = main_id;                                                                                                                                                                          
             ImGui::DockBuilderDockWindow("Control Panel", left_id);
             ImGui::DockBuilderDockWindow("Board",right_id);
         }
 
         renderer::renderPanel(p);
-        renderer::renderBoard(*b);
+        if(p.board==nullptr) renderer::renderBoard(*placeholder_board);
+        else renderer::renderBoard(*p.board);
+        
 
 
 

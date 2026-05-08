@@ -33,6 +33,7 @@ set(IMGUI_SOURCES
     src/imgui/imgui_widgets.cpp
     src/imgui/imgui_impl_glfw.cpp
     src/imgui/imgui_impl_opengl3.cpp
+    src/imgui/ImGuiFileDialog.cpp
 )
 
 file(GLOB_RECURSE GUI_SOURCES "src/gui/*.cpp")

@@ -51,9 +51,9 @@ struct Neighbor {
  * {} (melambangkan vector kosong) terus outputin
  * std::cout << We don't have that heuristic for this algorithm, bucko << std::endl; 
  */
-std::pair<int, std::vector<Direction>> UCS(Board b, int heuristic);
-std::vector<Direction> GBFS(Board b, int heuristic);
-std::vector<Direction> ASTAR(Board b, int heuristic);
+std::pair<int, std::vector<Direction>> UCS(const Board& board, int heuristic);
+std::pair<int, std::vector<Direction>> GBFS(const Board& board, int heuristic);
+std::pair<int, std::vector<Direction>> ASTAR(const Board& board, int heuristic);
 
 double heuristics(SearchNode node, SearchNode goal, int choice);
 double manhattanDistance(SearchNode node, SearchNode goal);
