@@ -7,20 +7,32 @@
 #include <GLFW/glfw3.h>
 #include <vector>
 #include <string>
+#include <utility>
 
 #define DIRBUFSIZE 128
 class ControlPanel{
 private:
-    Board* board;
+    
     public:
     char dirbuf[DIRBUFSIZE];
+    
+    std::pair<int, std::vector<Direction>> board_result;
+    size_t result_idx;
+
 
 public:
+    Board* board;
     ControlPanel();
     int algorithm; //0=UCS, 1=A*, 2=GBFS 
     int heuristic;
     void loadBoard(std::ifstream& config);
     void solveBoard();
+
+    //Solution viewing
+    void maju();
+    void mundur();
+    void reset();
+
 };
     
 
