@@ -42,7 +42,7 @@ int main(int, char**) {
     ImGui_ImplGlfw_InitForOpenGL(window, true);
     ImGui_ImplOpenGL3_Init(glsl_version);
 
-    std::ifstream config("../configs/config1.txt");    
+    std::ifstream config("../configs/placeholder.txt");    
     if (!config.is_open()) {
         std::cerr << "Error: Could not open the file" << std::endl;
         return 1;
