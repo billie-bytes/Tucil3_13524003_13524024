@@ -162,7 +162,7 @@ namespace renderer {
 
         ImGui::TableNextRow();
         ImGui::TableNextColumn();
-        ImGui::InputText("##path",cp.dirbuf,IM_ARRAYSIZE(cp.dirbuf));
+        ImGui::InputTextWithHint("##path", "Path relative to executable",cp.dirbuf,IM_ARRAYSIZE(cp.dirbuf));
         ImGui::SameLine();
         if (ImGui::Button("Enter Path",ImVec2(-FLT_MIN, 0.0f))) {
             std::ifstream config(cp.dirbuf);
