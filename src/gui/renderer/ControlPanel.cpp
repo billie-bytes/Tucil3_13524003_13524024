@@ -15,7 +15,7 @@
 
 
 ControlPanel::ControlPanel()
-:board(nullptr),algorithm(0),heuristic(0),board_result(-1,{}),result_idx(0)
+:board(nullptr),algorithm(0),heuristic(0),board_result(-1,{}),result_idx(0),k(0)
 {
     for(int i =0; i<DIRBUFSIZE; ++i){
         dirbuf[i] = '\0';
@@ -25,6 +25,9 @@ ControlPanel::ControlPanel()
 void ControlPanel::loadBoard(std::ifstream& config){
     if(board!=nullptr)delete board;
     board = Board::create(config);
+    for(int i =0; i<DIRBUFSIZE; ++i){
+        dirbuf[i] = '\0';
+    }
     board_result.first = -1;
     board_result.second.clear();
     result_idx = 0;
@@ -45,6 +48,10 @@ void ControlPanel::solveBoard(){
             break;
         case 2:
             board_result = GBFS(*board, heuristic);
+        case 3:
+            board_result = BFS(*board);
+        case 4:
+            board_result = BeamSearch(*board, heuristic, k);
     }
     auto end_time = std::chrono::high_resolution_clock::now();
     solve_time_ms = std::chrono::duration<double, std::milli>(end_time - start_time).count();
@@ -88,17 +95,23 @@ namespace renderer {
         if (ImGui::Button("Enter Path",ImVec2(-FLT_MIN, 0.0f))) {
             std::ifstream config(cp.dirbuf);
             cp.loadBoard(config);
-            for(int i =0; i<DIRBUFSIZE; ++i){
-                cp.dirbuf[i] = '\0';
-            }
         }
 
         ImGui::TableNextRow();
         ImGui::TableNextColumn();
         ImGui::Text("Algorithm Selection");
-        ImGui::RadioButton("A*",&cp.algorithm,0); ImGui::SameLine();
-        ImGui::RadioButton("UCS",&cp.algorithm,1); ImGui::SameLine();
+        ImGui::RadioButton("A*",&cp.algorithm,0);
+        ImGui::RadioButton("UCS",&cp.algorithm,1);
         ImGui::RadioButton("GBFS",&cp.algorithm,2);
+        
+
+        ImGui::RadioButton("BFS",&cp.algorithm,3);
+        ImGui::RadioButton("BeamSearch",&cp.algorithm,4);
+
+        ImGui::SameLine();
+        ImGui::BeginDisabled(cp.algorithm != 4);
+        ImGui::InputInt("##k", &cp.k); if (cp.k < 0) cp.k = 0;
+        ImGui::EndDisabled();
 
         ImGui::TableNextRow();
         ImGui::TableNextColumn();
@@ -108,7 +121,7 @@ namespace renderer {
         if(cp.algorithm==2&&cp.heuristic==0){ //GBFS harus milih heuristic
             cp.heuristic = 1;
         }   
-        if(cp.algorithm==1&&cp.heuristic!=0){ //UCS gblh milih heuristic
+        if((cp.algorithm==1||cp.algorithm==3)&&cp.heuristic!=0){ //UCS and BFS gblh milih heuristic
             cp.heuristic = 0;
         }  
         
