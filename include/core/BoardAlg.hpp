@@ -47,14 +47,10 @@ struct Neighbor {
     }
 };
 
-/**
- * Misalkan UCS dikasih UCS(b,2) dan UCS gapunya heuristic 2, return aja
- * {} (melambangkan vector kosong) terus outputin
- * std::cout << We don't have that heuristic for this algorithm, bucko << std::endl; 
- */
-std::pair<int, std::vector<Direction>> UCS(const Board& board, int heuristic);
+std::pair<int, std::vector<Direction>> UCS(const Board& board);
 std::pair<int, std::vector<Direction>> GBFS(const Board& board, int heuristic);
 std::pair<int, std::vector<Direction>> ASTAR(const Board& board, int heuristic);
+std::pair<int, std::vector<Direction>> BFS(const Board& board);
 
 double heuristics(SearchNode node, SearchNode goal, int choice);
 double manhattanDistance(SearchNode node, SearchNode goal);

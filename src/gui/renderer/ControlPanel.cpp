@@ -38,7 +38,7 @@ void ControlPanel::solveBoard(){
             board_result = ASTAR(*board,heuristic);
             break;
         case 1:
-            board_result = UCS(*board,heuristic);
+            board_result = UCS(*board);
             break;
         case 2:
             board_result = GBFS(*board, heuristic);
@@ -99,9 +99,22 @@ namespace renderer {
         ImGui::TableNextColumn();
         
         ImGui::Text("Heuristic Selection");
+
+        if(cp.algorithm==2&&cp.heuristic==0){ //GBFS harus milih heuristic
+            cp.heuristic = 1;
+        }   
+        if(cp.algorithm==1&&cp.heuristic!=0){ //UCS gblh milih heuristic
+            cp.heuristic = 0;
+        }  
+        
+        ImGui::BeginDisabled(cp.algorithm == 2);
         ImGui::RadioButton("None",&cp.heuristic,0); ImGui::SameLine();
+        ImGui::EndDisabled();
+
+        ImGui::BeginDisabled(cp.algorithm == 1);
         ImGui::RadioButton("Manhattan Distance",&cp.heuristic,1); ImGui::SameLine();
         ImGui::RadioButton("Euclidean Distance",&cp.heuristic,2);
+        ImGui::EndDisabled();
 
         ImGui::BeginDisabled(cp.board==nullptr);
         if (ImGui::Button("Solve Board",ImVec2(-FLT_MIN, 0.0f))) {

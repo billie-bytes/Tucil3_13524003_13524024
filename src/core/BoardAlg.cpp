@@ -109,7 +109,7 @@ std::vector<Direction> reconstructPath(std::unordered_map<SearchNode, std::pair<
 }
 
 
-std::pair<int, std::vector<Direction>> UCS(const Board& board, int heuristic){
+std::pair<int, std::vector<Direction>> UCS(const Board& board){
     SearchNode start(board.pinX, board.pinY, board.ord);
     SearchNode goal(board.winX, board.winY, 0);
     std::priority_queue<Neighbor, std::vector<Neighbor>, std::greater<Neighbor>> pq;
@@ -223,6 +223,10 @@ std::pair<int, std::vector<Direction>> ASTAR(const Board& board, int heuristic){
     }
 
     return {-1, {}};
+}
+
+std::pair<int, std::vector<Direction>> BFS(const Board& board){
+
 }
 
 double heuristics(SearchNode node, SearchNode goal, int choice) {
