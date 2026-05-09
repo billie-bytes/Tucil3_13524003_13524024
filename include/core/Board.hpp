@@ -12,7 +12,7 @@ enum class Direction : int {
 };
 
 enum Tile {
-    LAVA = 998,
+    LAVA = 1000,
     WALL = 999,
 };
 

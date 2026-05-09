@@ -41,13 +41,13 @@ namespace renderer {
         for(int i = 0; i<b.panjang; i++){
 
             for(int j = 0; j<b.lebar; j++){
-                if(matrix[i][j] < 998){
+                if(matrix[i][j] < WALL){
                     draw_list->AddRectFilled(rectTopLeft,rectBotRight,IM_COL32(67,67,67,200));
                     draw_list->AddRect(rectTopLeft,rectBotRight,IM_COL32(40,40,40,200));
                 }
 
-                if(matrix[i][j] == 998) draw_list->AddRectFilled(rectTopLeft,rectBotRight,IM_COL32(255,0,0,255));
-                if(matrix[i][j] == 999) draw_list->AddRectFilled(rectTopLeft,rectBotRight,IM_COL32(67,67,67,255));
+                if(matrix[i][j] == LAVA) draw_list->AddRectFilled(rectTopLeft,rectBotRight,IM_COL32(255,0,0,255));
+                if(matrix[i][j] == WALL) draw_list->AddRectFilled(rectTopLeft,rectBotRight,IM_COL32(67,67,67,255));
                 if(b.pinX==i&&b.pinY==j) draw_list->AddRectFilled(rectTopLeft,rectBotRight,IM_COL32(0,0,255,255));
                 if(b.winX==i&&b.winY==j) draw_list->AddRectFilled(rectTopLeft,rectBotRight,IM_COL32(0,255,0,255));
                 auto x_it = b.orderedTiles.find(i);
