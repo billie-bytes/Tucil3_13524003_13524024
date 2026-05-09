@@ -37,6 +37,8 @@ public:
     void mundur();
     void reset();
 
+    void saveSolution();
+
 };
     
 

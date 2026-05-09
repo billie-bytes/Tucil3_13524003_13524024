@@ -12,10 +12,10 @@
 #include <array>
 #include <string>
 #include <chrono>
-
+#include <fstream>
 
 ControlPanel::ControlPanel()
-:board(nullptr),algorithm(0),heuristic(0),board_result(-1,{}),result_idx(0),k(0)
+:board(nullptr),algorithm(0),heuristic(0),board_result(-1,{}),result_idx(0),k(50)
 {
     for(int i =0; i<DIRBUFSIZE; ++i){
         dirbuf[i] = '\0';
@@ -78,6 +78,78 @@ void ControlPanel::reset(){
     result_idx = 0;
 }
 
+static void printBoard(Board* board, std::ofstream& outFile){
+    for(int i = 0; i < board->panjang; ++i){
+            for(int j = 0; j < board->lebar; ++j){
+                if(i == board->pinX && j == board->pinY){
+                    outFile << 'Z';
+                } else if(i == board->winX && j == board->winY){
+                    outFile << 'O';
+                } else if(board->getMatrix()[i][j] == WALL){
+                    outFile << 'X';
+                } else if(board->getMatrix()[i][j] == LAVA){
+                    outFile << 'L';
+                } else {
+                    bool isNumbered = false;
+                    auto x_it = board->orderedTiles.find(i);
+                    if(x_it != board->orderedTiles.end()){
+                        auto y_it = x_it->second.find(j);
+                        if(y_it != x_it->second.end() && y_it->second != -1){
+                            outFile << y_it->second;
+                            isNumbered = true;
+                        }
+                    }
+                    
+                    if(!isNumbered) {
+                        outFile << '.'; 
+                    }
+                }
+            }
+            outFile << '\n';
+        }
+}
+
+void ControlPanel::saveSolution(){
+    if(board == nullptr || board_result.first == -1) return;
+
+    std::ofstream outFile("solution.txt");
+    if(!outFile.is_open()){
+        printf("Failed to open solution.txt\n");
+        return;
+    }
+
+    reset();
+
+    outFile << "initial board\n";
+    printBoard(board, outFile);
+
+    int step = 1;
+    while(result_idx < board_result.second.size()){
+        Direction d = board_result.second[result_idx];
+        std::string dirStr;
+        switch(d){
+            /*
+            Okay, due to the logic on the algorithms, UP is y--, which visually is going to the left
+            in the board.. I know this is stupid but fixing the actual logic would break a lot of stuff
+            so instead I just adjust it here.
+            */
+            case Direction::UP:dirStr = "LEFT"; break;
+            case Direction::DOWN:dirStr = "RIGHT"; break;
+            case Direction::LEFT:dirStr = "UP"; break;
+            case Direction::RIGHT:dirStr = "DOWN"; break;
+        }
+
+        outFile << "STEP " << step++ << ": " << dirStr << "\n";
+        maju();
+        printBoard(board, outFile);
+    }
+
+    outFile << "\nWAKTU EKSEKUSI: " << solve_time_ms << " ms\n";
+    outFile << "TOTAL COST: " << board_result.first << "\n";
+
+    outFile.close();
+    reset();
+}
 
 
 namespace renderer {
@@ -110,7 +182,7 @@ namespace renderer {
 
         ImGui::SameLine();
         ImGui::BeginDisabled(cp.algorithm != 4);
-        ImGui::InputInt("##k", &cp.k); if (cp.k < 0) cp.k = 0;
+        ImGui::InputInt("##k", &cp.k); if (cp.k < 1) cp.k = 1;
         ImGui::EndDisabled();
 
         ImGui::TableNextRow();
@@ -129,7 +201,7 @@ namespace renderer {
         ImGui::RadioButton("None",&cp.heuristic,0); ImGui::SameLine();
         ImGui::EndDisabled();
 
-        ImGui::BeginDisabled(cp.algorithm == 1);
+        ImGui::BeginDisabled(cp.algorithm == 1||cp.algorithm==3);
         ImGui::RadioButton("Manhattan Distance",&cp.heuristic,1); ImGui::SameLine();
         ImGui::RadioButton("Euclidean Distance",&cp.heuristic,2);
         ImGui::EndDisabled();
@@ -171,14 +243,18 @@ namespace renderer {
         if (cp.board_result.first != -1 && cp.solve_time_ms >= 0.0) {
             float text_height = ImGui::GetTextLineHeightWithSpacing();
             float window_height = ImGui::GetWindowHeight();
+            float button_height = ImGui::GetFrameHeight();
             float current_y = ImGui::GetCursorPosY();
             float padding_y = ImGui::GetStyle().WindowPadding.y;
-            float target_y = window_height - 2*text_height - padding_y;
+            float target_y = window_height - 3*text_height - button_height - padding_y;
             
             if (target_y > current_y) {
                 ImGui::SetCursorPosY(target_y);
             }
-            
+            if(ImGui::Button("Save Solution")){
+                cp.saveSolution();
+            }
+            ImGui::Text("Saved solution will go to ./solution.txt");
             ImGui::Text("Solved in %.3f ms", cp.solve_time_ms);
             ImGui::Text("Cost: %d", cp.board_result.first);
         }
