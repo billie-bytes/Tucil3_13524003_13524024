@@ -1,7 +1,7 @@
 #include "../../include/core/BoardAlg.hpp"
 #include <algorithm>
 #include <queue>
-
+#include <unordered_set>
 
 /**
  * Feel free untuk bikin fungsi helper sebanyak yang kamu mau.
@@ -228,6 +228,74 @@ std::pair<int, std::vector<Direction>> ASTAR(const Board& board, int heuristic){
 std::pair<int, std::vector<Direction>> BFS(const Board& board){
     SearchNode start(board.pinX, board.pinY, board.ord);
     SearchNode goal(board.winX, board.winY, 0);
+    std::queue<Neighbor> q;
+    std::unordered_set<SearchNode, SearchNodeHash> visited;
+    std::unordered_map<SearchNode, std::pair<SearchNode, Direction>, SearchNodeHash> parent;
+    q.push({start, 0.0, 0.0, Direction::RIGHT});
+    visited.insert(start);
+
+    while (!q.empty()) {
+        
+        Neighbor current = q.front();
+        q.pop();
+
+        SearchNode currentNode = current.node;
+        int currentCost = current.totalCost;
+        if (currentNode == goal) {
+            return {currentCost, reconstructPath(parent, start, currentNode)};
+        }
+
+        auto expanded = expand(board, currentNode, currentCost);
+        for (const Neighbor& next : expanded) {
+            
+            if (visited.find(next.node) == visited.end()) {
+                visited.insert(next.node);
+                parent[next.node] = {currentNode, next.dir};
+                q.push(next);
+            }
+        }
+    }
+
+    return {-1, {}};
+}
+
+std::pair<int, std::vector<Direction>> BeamSearch(const Board& board, int heuristic){
+    SearchNode start(board.pinX, board.pinY, board.ord);
+    SearchNode goal(board.winX, board.winY, 0);
+    std::priority_queue<Neighbor, std::vector<Neighbor>, std::greater<Neighbor>> pq;
+    std::unordered_map<SearchNode, double, SearchNodeHash> dist;
+    std::unordered_map<SearchNode, std::pair<SearchNode, Direction>, SearchNodeHash> parent;
+
+    // Same as A* at this stage
+    pq.push({start, 0.0, heuristics(start, goal, heuristic), Direction::RIGHT});
+
+    dist[start] = 0.0;
+
+    while (!pq.empty()) {
+
+        Neighbor current = pq.top();
+        pq.pop();
+
+        SearchNode currentNode = current.node;
+        int currentCost = current.totalCost;
+
+        if (currentNode == goal) {
+            return {currentCost, reconstructPath(parent, start, currentNode)};
+        }
+
+        auto expanded = expand(board, currentNode, currentCost);
+
+        for (const Neighbor& next : expanded) {
+            double estimatedCostOnward = heuristics(next.node, goal, heuristic);
+            if (!dist.count(next.node) || next.totalCost + estimatedCostOnward < dist[next.node]) {
+                dist[next.node] = next.totalCost + estimatedCostOnward;
+                parent[next.node] = {currentNode, next.dir};
+                pq.push({next.node, next.totalCost, next.totalCost + estimatedCostOnward, next.dir});
+            }
+        }
+    }
+
+    return {-1, {}};
 }
 
 double heuristics(SearchNode node, SearchNode goal, int choice) {
