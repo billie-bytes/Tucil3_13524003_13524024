@@ -48,10 +48,13 @@ void ControlPanel::solveBoard(){
             break;
         case 2:
             board_result = GBFS(*board, heuristic);
+            break;
         case 3:
             board_result = BFS(*board);
+            break;
         case 4:
             board_result = BeamSearch(*board, heuristic, k);
+            break;
     }
     auto end_time = std::chrono::high_resolution_clock::now();
     solve_time_ms = std::chrono::duration<double, std::milli>(end_time - start_time).count();

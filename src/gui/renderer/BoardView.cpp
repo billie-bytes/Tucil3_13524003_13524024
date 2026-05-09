@@ -48,8 +48,12 @@ namespace renderer {
 
                 if(matrix[i][j] == LAVA) draw_list->AddRectFilled(rectTopLeft,rectBotRight,IM_COL32(255,0,0,255));
                 if(matrix[i][j] == WALL) draw_list->AddRectFilled(rectTopLeft,rectBotRight,IM_COL32(67,67,67,255));
-                if(b.pinX==i&&b.pinY==j) draw_list->AddRectFilled(rectTopLeft,rectBotRight,IM_COL32(0,0,255,255));
                 if(b.winX==i&&b.winY==j) draw_list->AddRectFilled(rectTopLeft,rectBotRight,IM_COL32(0,255,0,255));
+                if(b.pinX==i&&b.pinY==j) {
+                    ImVec2 smallRectTopLeft  = ImVec2(rectTopLeft.x + 4, rectTopLeft.y + 4);
+                    ImVec2 smallRectBotRight = ImVec2(rectBotRight.x - 4, rectBotRight.y - 4);
+                    draw_list->AddRectFilled(smallRectTopLeft,smallRectBotRight,IM_COL32(0,0,255,255));
+                } 
                 auto x_it = b.orderedTiles.find(i);
                 if (x_it != b.orderedTiles.end()) {
                     auto y_it = x_it->second.find(j);
