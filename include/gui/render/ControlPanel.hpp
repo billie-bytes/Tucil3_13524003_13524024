@@ -19,9 +19,11 @@ private:
     std::pair<int, std::vector<Direction>> board_result;
     std::vector<std::pair<int, int>> saved_pin_pos;
     size_t result_idx;
+    
 
 
 public:
+    double solve_time_ms = -1.0;
     Board* board;
     ControlPanel();
     int algorithm; //0=UCS, 1=A*, 2=GBFS 

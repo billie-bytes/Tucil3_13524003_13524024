@@ -11,6 +11,7 @@
 #include <vector>
 #include <array>
 #include <string>
+#include <chrono>
 
 
 ControlPanel::ControlPanel()
@@ -28,11 +29,13 @@ void ControlPanel::loadBoard(std::ifstream& config){
     board_result.second.clear();
     result_idx = 0;
     saved_pin_pos.clear();
+    solve_time_ms = -1.0;
 }
 
 
 void ControlPanel::solveBoard(){
     if(board==nullptr)return;
+    auto start_time = std::chrono::high_resolution_clock::now();
     switch(algorithm){
         case 0:
             board_result = ASTAR(*board,heuristic);
@@ -43,6 +46,8 @@ void ControlPanel::solveBoard(){
         case 2:
             board_result = GBFS(*board, heuristic);
     }
+    auto end_time = std::chrono::high_resolution_clock::now();
+    solve_time_ms = std::chrono::duration<double, std::milli>(end_time - start_time).count();
     saved_pin_pos.push_back({board->pinX,board->pinY});
 }
 
@@ -146,7 +151,24 @@ namespace renderer {
         ImGui::TableNextRow();
         ImGui::TableNextColumn();
 
+
         ImGui::EndTable();
+        
+
+        if (cp.board_result.first != -1 && cp.solve_time_ms >= 0.0) {
+            float text_height = ImGui::GetTextLineHeightWithSpacing();
+            float window_height = ImGui::GetWindowHeight();
+            float current_y = ImGui::GetCursorPosY();
+            float padding_y = ImGui::GetStyle().WindowPadding.y;
+            float target_y = window_height - 2*text_height - padding_y;
+            
+            if (target_y > current_y) {
+                ImGui::SetCursorPosY(target_y);
+            }
+            
+            ImGui::Text("Solved in %.3f ms", cp.solve_time_ms);
+            ImGui::Text("Cost: %d", cp.board_result.first);
+        }
         ImGui::End();
 
         return ImGui::GetID("Control Panel");

@@ -226,7 +226,8 @@ std::pair<int, std::vector<Direction>> ASTAR(const Board& board, int heuristic){
 }
 
 std::pair<int, std::vector<Direction>> BFS(const Board& board){
-
+    SearchNode start(board.pinX, board.pinY, board.ord);
+    SearchNode goal(board.winX, board.winY, 0);
 }
 
 double heuristics(SearchNode node, SearchNode goal, int choice) {
