@@ -3,7 +3,7 @@
 #include <string>
 #include <cctype>
 #include <fstream>
-Board::Board(int panjang, int lebar):panjang(panjang),lebar(lebar),ord(0){
+Board::Board(int panjang, int lebar):panjang(panjang),lebar(lebar),ord(0),winX(-1),winY(-1){
     matrix = new int*[panjang];
     for(int i = 0; i<panjang; i++){
         matrix[i]=new int[lebar]();
@@ -61,11 +61,9 @@ void Board::placeWall(int x, int y){
 
 void Board::placeValue(int x, int y, int value){
     if(x<0||y<0){
-        std::cout << "Where are you putting it, bud" << std::endl;
         return;
     }
     if(value == WALL || value == LAVA){
-        std::cout << "Those values are reserved for walls and lavas, bucko" << std::endl;
         return;
     }
     matrix[x][y] = value;

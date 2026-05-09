@@ -61,9 +61,9 @@ void ControlPanel::mundur(){
 }
 
 void ControlPanel::reset(){
-    while(result_idx>0){
-        mundur();
-    }
+    auto [x,y] = saved_pin_pos[0];
+    board->pinX = x; board->pinY = y;
+    result_idx = 0;
 }
 
 
