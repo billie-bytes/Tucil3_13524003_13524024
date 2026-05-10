@@ -60,6 +60,31 @@ void ControlPanel::solveBoard(){
             if(doOrder)board_result = OrderedSearch(*board, 4, heuristic, k);
             else board_result = BeamSearch(*board, heuristic, k);
             break;
+            
+            {auto allResult = ASTAR(*board,heuristic);
+            board_result = allResult.first;
+            iteration = allResult.second;
+            break;}
+        case 1:
+            {auto allResult = UCS(*board);
+            board_result = allResult.first;
+            iteration = allResult.second;
+            break;}
+        case 2:
+            {auto allResult = GBFS(*board, heuristic);
+            board_result = allResult.first;
+            iteration = allResult.second;
+            break;}
+        case 3:
+            {auto allResult = BFS(*board);
+            board_result = allResult.first;
+            iteration = allResult.second;
+            break;}
+        case 4:
+            {auto allResult = BeamSearch(*board, heuristic, k);
+            board_result = allResult.first;
+            iteration = allResult.second;
+            break;}
     }
     auto end_time = std::chrono::high_resolution_clock::now();
     solve_time_ms = std::chrono::duration<double, std::milli>(end_time - start_time).count();
@@ -174,7 +199,7 @@ void ControlPanel::saveSolution(std::string fileName){
 
     outFile << "Waktu eksekusi: " << solve_time_ms << " ms\n";
     // outFile << "TOTAL COST: " << board_result.first << "\n";
-    outFile << "Banyak iterasi yang dilakukan: " << "[to be added]" << " iterasi\n";
+    outFile << "Banyak iterasi yang dilakukan: " << iteration.first << " iterasi\n";
 
     outFile.close();
     reset();
