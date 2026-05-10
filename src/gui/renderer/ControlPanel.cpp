@@ -38,6 +38,7 @@ void ControlPanel::loadBoard(std::ifstream& config){
 
 void ControlPanel::solveBoard(){
     if(board==nullptr)return;
+    if(result_idx>0)reset();
     auto start_time = std::chrono::high_resolution_clock::now();
     switch(algorithm){
         case 0:
@@ -231,7 +232,7 @@ namespace renderer {
 
         ImGui::TableNextRow();
         ImGui::TableNextColumn();
-        ImGui::InputTextWithHint("##path", "Path from configs folder",cp.dirbuf,IM_ARRAYSIZE(cp.dirbuf));
+        ImGui::InputTextWithHint("##path", "../configs/tc1.txt",cp.dirbuf,IM_ARRAYSIZE(cp.dirbuf));
         ImGui::SameLine();
         if (ImGui::Button("Enter Path",ImVec2(-FLT_MIN, 0.0f))) {
             cp.configFileName = cp.dirbuf;
@@ -312,50 +313,55 @@ namespace renderer {
         ImGui::EndTable();
         
 
-        if (cp.board_result.first != -1 && cp.solve_time_ms >= 0.0) {
-            float text_height = ImGui::GetTextLineHeightWithSpacing();
-            float window_height = ImGui::GetWindowHeight();
-            float button_height = ImGui::GetFrameHeight();
-            float current_y = ImGui::GetCursorPosY();
-            float padding_y = ImGui::GetStyle().WindowPadding.y;
-            float target_y = window_height - 4*text_height - button_height - padding_y;
+        if (cp.board == nullptr) {
+            if (cp.configFileName.empty()) {
+                ImGui::Text("Please load a board configuration.");
+            } else {
+                ImGui::TextColored(ImVec4(1.0f, 0.2f, 0.2f, 1.0f), "Error: Failed to load board.");
+                ImGui::Text("Check if the file path is correct.");
+            }
+        } 
+        else if (cp.solve_time_ms >= 0.0) {
+            if (cp.board_result.first == -1) {
+                // Board loaded, but solve failed (No solution found)
+                ImGui::TextColored(ImVec4(1.0f, 0.2f, 0.2f, 1.0f), "Failed to find a solution!");
+                ImGui::Text("Execution time: %.3f ms", cp.solve_time_ms);
+            } 
+            else {
+                float text_height = ImGui::GetTextLineHeightWithSpacing();
+                float window_height = ImGui::GetWindowHeight();
+                float button_height = ImGui::GetFrameHeight();
+                float current_y = ImGui::GetCursorPosY();
+                float padding_y = ImGui::GetStyle().WindowPadding.y;
+                float target_y = window_height - 4*text_height - button_height - padding_y;
 
-            // Generate file name to include config, algorithm, heuristic, and other configuration
-            std::string fileName = cp.configFileName;
-            int pos = fileName.find(".txt");
-            if(pos < fileName.size()) {
-                fileName = fileName.substr(0, pos);
+                // Generate file name to include config, algorithm, heuristic, and other configuration
+                std::string fileName = cp.configFileName;
+                int pos = fileName.find(".txt");
+                if(pos < fileName.size()) {
+                    fileName = fileName.substr(0, pos);
+                }
+                fileName += "_";
+                switch (cp.algorithm){
+                case 0: fileName += "ASTAR_h=" + std::to_string(cp.heuristic); break;
+                case 1: fileName += "UCS"; break;
+                case 2: fileName += "BGFS_h=" + std::to_string(cp.heuristic); break;
+                case 3: fileName += "BFS"; break;
+                case 4: fileName += "BeamSearch_h=" + std::to_string(cp.heuristic) + "_k=" + std::to_string(cp.k); break;
+                }
+                fileName += ".txt";
+                
+                if (target_y > current_y) {
+                    ImGui::SetCursorPosY(target_y);
+                }
+                if(ImGui::Button("Save Solution")){
+                    cp.saveSolution(fileName);
+                }
+                ImGui::Text("Saved solution will go to test/%s", fileName.c_str());
+                ImGui::Text("Solved in %.3f ms", cp.solve_time_ms);
+                ImGui::Text("Total iteration: %d", cp.iteration.first);
+                ImGui::Text("Cost: %d", cp.board_result.first);
             }
-            fileName += "_";
-            switch (cp.algorithm){
-            case 0:
-                fileName += "ASTAR_h=" + std::to_string(cp.heuristic);
-                break;
-            case 1:
-                fileName += "UCS";
-                break;
-            case 2:
-                fileName += "BGFS_h=" + std::to_string(cp.heuristic);
-                break;
-            case 3:
-                fileName += "BFS";
-                break;
-            case 4:
-                fileName += "BeamSearch_h=" + std::to_string(cp.heuristic) + "_k=" + std::to_string(cp.k);
-                break;
-            }
-            fileName += ".txt";
-            
-            if (target_y > current_y) {
-                ImGui::SetCursorPosY(target_y);
-            }
-            if(ImGui::Button("Save Solution")){
-                cp.saveSolution(fileName);
-            }
-            ImGui::Text("Saved solution will go to test/%s", fileName.c_str());
-            ImGui::Text("Solved in %.3f ms", cp.solve_time_ms);
-            ImGui::Text("Total iteration: %d", cp.iteration.first);
-            ImGui::Text("Cost: %d", cp.board_result.first);
         }
         ImGui::End();
 

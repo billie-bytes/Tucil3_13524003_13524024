@@ -68,7 +68,7 @@ int main(int, char**) {
             ImGui::DockBuilderRemoveNode(main_id);
             ImGui::DockBuilderAddNode(main_id,ImGuiDockNodeFlags_DockSpace);
             ImGui::DockBuilderSetNodeSize(main_id, ImGui::GetMainViewport()->Size);  
-            ImGuiID left_id = ImGui::DockBuilderSplitNode(main_id, ImGuiDir_Left, 0.3f, nullptr, &main_id); 
+            ImGuiID left_id = ImGui::DockBuilderSplitNode(main_id, ImGuiDir_Left, 0.4f, nullptr, &main_id); 
             ImGuiID right_id = main_id;                                                                                                                                                                          
             ImGui::DockBuilderDockWindow("Control Panel", left_id);
             ImGui::DockBuilderDockWindow("Board",right_id);
