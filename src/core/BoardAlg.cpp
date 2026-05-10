@@ -358,51 +358,6 @@ std::pair<std::pair<int, std::vector<Direction>>, std::pair<int, std::vector<Dir
     return {{-1, {}}, {-1, {}}};
 }
 
-std::pair<std::pair<int, std::vector<Direction>>, std::pair<int, std::vector<Direction>>> OrderedSearch(const Board& b, int algorithm, int heuristic, size_t k){
-    std::vector<std::pair<int, int>> goals(b.panjang*b.lebar,std::pair(-1,-1));
-    int trueGoal = 0;
-    for(int i = 0; i<b.panjang; ++i){
-        for(int j = 0; j<b.lebar; ++j){
-            if(getOrder(b,i,j)!=-1){
-                goals[getOrder(b,i,j)] = {i,j};
-                trueGoal++;
-            }
-        }
-    }
-    goals[trueGoal] = {b.winX,b.winY};
-
-    int goals_consumed = 0;
-    int totalCost = 0;
-    int totalIteration = 0;
-    std::vector<Direction> combinedPath;
-    Board* copyb  = Board::create(b.panjang,b.lebar);
-    *copyb = b;
-    while(goals_consumed<=trueGoal){
-        std::pair<std::pair<int, std::vector<Direction>>, std::pair<int, std::vector<Direction>>> temp_result;
-        
-        copyb->winX = goals[goals_consumed].first;
-        copyb->winY = goals[goals_consumed].second;
-        switch (algorithm){
-            case 0: temp_result = ASTAR(*copyb,heuristic); break;
-            case 1: temp_result = UCS(*copyb); break;
-            case 2: temp_result = GBFS(*copyb,heuristic); break;
-            case 3: temp_result = BFS(*copyb); break;
-            case 4: temp_result = BeamSearch(*copyb,heuristic,k); break;
-        }
-        if(temp_result.first.first==-1){delete copyb; return {{-1,{}},{-1,{}}};}
-        copyb->pinX = goals[goals_consumed].first;
-        copyb->pinY = goals[goals_consumed].second;
-        copyb->ord++;
-        totalCost += temp_result.first.first;
-        totalIteration += temp_result.second.first;
-        combinedPath.insert(combinedPath.end(),temp_result.first.second.begin(),temp_result.first.second.end());
-        goals_consumed++;
-    }
-    delete copyb;
-    return {{totalCost, combinedPath},{totalIteration,{}}};
-}
-
-
 double heuristics(SearchNode node, SearchNode goal, int choice) {
     switch (choice) {
     case 1:

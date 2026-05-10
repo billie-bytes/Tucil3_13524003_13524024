@@ -15,7 +15,7 @@
 #include <fstream>
 
 ControlPanel::ControlPanel()
-:board(nullptr),algorithm(0),heuristic(0),board_result(-1,{}),result_idx(0),k(50),doOrder(false)
+:board(nullptr),algorithm(0),heuristic(0),board_result(-1,{}),result_idx(0),k(50)
 {
     for(int i =0; i<DIRBUFSIZE; ++i){
         dirbuf[i] = '\0';
@@ -42,60 +42,33 @@ void ControlPanel::solveBoard(){
     auto start_time = std::chrono::high_resolution_clock::now();
     switch(algorithm){
         case 0:
-            if(doOrder){
-                auto all = OrderedSearch(*board, 0, heuristic, k);
-                board_result = all.first;
-                iteration = all.second;
-            }   
-            else{
-                auto all = ASTAR(*board, heuristic);
-                board_result = all.first;
-                iteration = all.second;
-            }
-            break;
+            {auto all = ASTAR(*board, heuristic);
+            board_result = all.first;
+            iteration = all.second;
+            break;}
         case 1:
-            if(doOrder){
-                auto all = OrderedSearch(*board, 1, heuristic, k);
-                board_result = all.first;
-                iteration = all.second;
-            }   
-            else{
+            {
                 auto all = UCS(*board);
                 board_result = all.first;
                 iteration = all.second;
             }
             break;
         case 2:
-            if(doOrder){
-                auto all = OrderedSearch(*board, 2, heuristic, k);
-                board_result = all.first;
-                iteration = all.second;
-            }   
-            else{
+            {
                 auto all = GBFS(*board, heuristic);
                 board_result = all.first;
                 iteration = all.second;
             }
             break;
         case 3:
-            if(doOrder){
-                auto all = OrderedSearch(*board, 3, heuristic, k);
-                board_result = all.first;
-                iteration = all.second;
-            }   
-            else{
+            {
                 auto all = BFS(*board);
                 board_result = all.first;
                 iteration = all.second;
             }
             break;
         case 4:
-            if(doOrder){
-                auto all = OrderedSearch(*board, 4, heuristic, k);
-                board_result = all.first;
-                iteration = all.second;
-            }   
-            else{
+            {
                 auto all = BeamSearch(*board, heuristic, k);
                 board_result = all.first;
                 iteration = all.second;
@@ -214,7 +187,6 @@ void ControlPanel::saveSolution(std::string fileName){
     }
 
     outFile << "Waktu eksekusi: " << solve_time_ms << " ms\n";
-    // outFile << "TOTAL COST: " << board_result.first << "\n";
     outFile << "Banyak iterasi yang dilakukan: " << iteration.first << " iterasi\n";
 
     outFile.close();
@@ -232,7 +204,7 @@ namespace renderer {
 
         ImGui::TableNextRow();
         ImGui::TableNextColumn();
-        ImGui::InputTextWithHint("##path", "../configs/tc1.txt",cp.dirbuf,IM_ARRAYSIZE(cp.dirbuf));
+        ImGui::InputTextWithHint("##path", "Path relative to configs folder",cp.dirbuf,IM_ARRAYSIZE(cp.dirbuf));
         ImGui::SameLine();
         if (ImGui::Button("Enter Path",ImVec2(-FLT_MIN, 0.0f))) {
             cp.configFileName = cp.dirbuf;
@@ -242,8 +214,7 @@ namespace renderer {
 
         ImGui::TableNextRow();
         ImGui::TableNextColumn();
-        ImGui::Text("Algorithm Selection"); ImGui::SameLine();
-        if(ImGui::Checkbox("Do Ordered Tiles as Partial Goal",&cp.doOrder));
+        ImGui::Text("Algorithm Selection");
 
         ImGui::RadioButton("A*",&cp.algorithm,0);
         ImGui::RadioButton("UCS",&cp.algorithm,1);
