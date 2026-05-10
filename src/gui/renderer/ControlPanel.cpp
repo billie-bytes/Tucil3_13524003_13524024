@@ -41,20 +41,30 @@ void ControlPanel::solveBoard(){
     auto start_time = std::chrono::high_resolution_clock::now();
     switch(algorithm){
         case 0:
-            board_result = ASTAR(*board,heuristic);
-            break;
+            {auto allResult = ASTAR(*board,heuristic);
+            board_result = allResult.first;
+            iteration = allResult.second;
+            break;}
         case 1:
-            board_result = UCS(*board);
-            break;
+            {auto allResult = UCS(*board);
+            board_result = allResult.first;
+            iteration = allResult.second;
+            break;}
         case 2:
-            board_result = GBFS(*board, heuristic);
-            break;
+            {auto allResult = GBFS(*board, heuristic);
+            board_result = allResult.first;
+            iteration = allResult.second;
+            break;}
         case 3:
-            board_result = BFS(*board);
-            break;
+            {auto allResult = BFS(*board);
+            board_result = allResult.first;
+            iteration = allResult.second;
+            break;}
         case 4:
-            board_result = BeamSearch(*board, heuristic, k);
-            break;
+            {auto allResult = BeamSearch(*board, heuristic, k);
+            board_result = allResult.first;
+            iteration = allResult.second;
+            break;}
     }
     auto end_time = std::chrono::high_resolution_clock::now();
     solve_time_ms = std::chrono::duration<double, std::milli>(end_time - start_time).count();
@@ -169,7 +179,7 @@ void ControlPanel::saveSolution(std::string fileName){
 
     outFile << "Waktu eksekusi: " << solve_time_ms << " ms\n";
     // outFile << "TOTAL COST: " << board_result.first << "\n";
-    outFile << "Banyak iterasi yang dilakukan: " << "[to be added]" << " iterasi\n";
+    outFile << "Banyak iterasi yang dilakukan: " << iteration.first << " iterasi\n";
 
     outFile.close();
     reset();

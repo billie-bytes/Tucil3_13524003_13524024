@@ -47,11 +47,11 @@ struct Neighbor {
     }
 };
 
-std::pair<int, std::vector<Direction>> UCS(const Board& board);
-std::pair<int, std::vector<Direction>> GBFS(const Board& board, int heuristic);
-std::pair<int, std::vector<Direction>> ASTAR(const Board& board, int heuristic);
-std::pair<int, std::vector<Direction>> BFS(const Board& board);
-std::pair<int, std::vector<Direction>> BeamSearch(const Board& board, int heuristic, size_t k);
+std::pair<std::pair<int, std::vector<Direction>>, std::pair<int, std::vector<Direction>>> UCS(const Board& board);
+std::pair<std::pair<int, std::vector<Direction>>, std::pair<int, std::vector<Direction>>> GBFS(const Board& board, int heuristic);
+std::pair<std::pair<int, std::vector<Direction>>, std::pair<int, std::vector<Direction>>> ASTAR(const Board& board, int heuristic);
+std::pair<std::pair<int, std::vector<Direction>>, std::pair<int, std::vector<Direction>>> BFS(const Board& board);
+std::pair<std::pair<int, std::vector<Direction>>, std::pair<int, std::vector<Direction>>> BeamSearch(const Board& board, int heuristic, size_t k);
 double heuristics(SearchNode node, SearchNode goal, int choice);
 double manhattanDistance(SearchNode node, SearchNode goal);
 double euclideanDistance(SearchNode node, SearchNode goal);

@@ -18,6 +18,7 @@ private:
     int k;
     
     std::pair<int, std::vector<Direction>> board_result;
+    std::pair<int, std::vector<Direction>> iteration;
     std::vector<std::pair<int, int>> saved_pin_pos;
     size_t result_idx;
     
