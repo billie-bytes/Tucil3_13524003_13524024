@@ -1,5 +1,5 @@
-Solusi Yang Ditemukan : RULUDRUR
-Cost dari solusi : 87
+Solusi Yang Ditemukan : RURULDRUR
+Cost dari solusi : 104
 
 Initial
 XXXXXXX
@@ -28,52 +28,7 @@ X1...LX
 X...X.X
 XXXXXXX
 
-STEP 3 : L
-XXXXXXX
-X0....X
-X..X..X
-XZ...OX
-X1...LX
-X...X.X
-XXXXXXX
-
-STEP 4 : U
-XXXXXXX
-XZ....X
-X..X..X
-X....OX
-X1...LX
-X...X.X
-XXXXXXX
-
-STEP 5 : D
-XXXXXXX
-X0....X
-X..X..X
-X....OX
-X1...LX
-XZ..X.X
-XXXXXXX
-
-STEP 6 : R
-XXXXXXX
-X0....X
-X..X..X
-X....OX
-X1...LX
-X..ZX.X
-XXXXXXX
-
-STEP 7 : U
-XXXXXXX
-X0....X
-X..X..X
-X..Z.OX
-X1...LX
-X...X.X
-XXXXXXX
-
-STEP 8 : R
+STEP 3 : R
 XXXXXXX
 X0....X
 X..X..X
@@ -82,5 +37,59 @@ X1...LX
 X...X.X
 XXXXXXX
 
-Waktu eksekusi: 0.0559 ms
-Banyak iterasi yang dilakukan: 13 iterasi
+STEP 4 : U
+XXXXXXX
+X0...ZX
+X..X..X
+X....OX
+X1...LX
+X...X.X
+XXXXXXX
+
+STEP 5 : L
+XXXXXXX
+XZ....X
+X..X..X
+X....OX
+X1...LX
+X...X.X
+XXXXXXX
+
+STEP 6 : D
+XXXXXXX
+X0....X
+X..X..X
+X....OX
+X1...LX
+XZ..X.X
+XXXXXXX
+
+STEP 7 : R
+XXXXXXX
+X0....X
+X..X..X
+X....OX
+X1...LX
+X..ZX.X
+XXXXXXX
+
+STEP 8 : U
+XXXXXXX
+X0....X
+X..X..X
+X..Z.OX
+X1...LX
+X...X.X
+XXXXXXX
+
+STEP 9 : R
+XXXXXXX
+X0....X
+X..X..X
+X....ZX
+X1...LX
+X...X.X
+XXXXXXX
+
+Waktu eksekusi: 0.082371 ms
+Banyak iterasi yang dilakukan: 12 iterasi

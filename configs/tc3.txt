@@ -1,9 +1,9 @@
 8 8
 XXXXXXXX
-X***X**X
-X**X***X
+X***X2*X
+X**X0*1X
 X*L****X
-XX****LX
+XX4**3LX
 X*O*ZX*X
 XXXXXXXX
 XXXXXXXX

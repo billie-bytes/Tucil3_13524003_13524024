@@ -109,5 +109,5 @@ STEP 8 : R
 .......ZX.
 ......XX..
 
-Waktu eksekusi: 0.063012 ms
+Waktu eksekusi: 0.058059 ms
 Banyak iterasi yang dilakukan: 12 iterasi

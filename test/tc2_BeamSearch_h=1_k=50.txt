@@ -81,5 +81,5 @@ X.Z..X.X
 XXXXXXXX
 XXXXXXXX
 
-Waktu eksekusi: 0.074963 ms
-Banyak iterasi yang dilakukan: 16 iterasi
+Waktu eksekusi: 0.071016 ms
+Banyak iterasi yang dilakukan: 8 iterasi
