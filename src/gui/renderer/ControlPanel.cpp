@@ -41,50 +41,65 @@ void ControlPanel::solveBoard(){
     auto start_time = std::chrono::high_resolution_clock::now();
     switch(algorithm){
         case 0:
-            if(doOrder)board_result = OrderedSearch(*board, 0, heuristic, k);
-            else board_result = ASTAR(*board,heuristic);
+            if(doOrder){
+                auto all = OrderedSearch(*board, 0, heuristic, k);
+                board_result = all.first;
+                iteration = all.second;
+            }   
+            else{
+                auto all = ASTAR(*board, heuristic);
+                board_result = all.first;
+                iteration = all.second;
+            }
             break;
         case 1:
-            if(doOrder)board_result = OrderedSearch(*board, 1, heuristic, k);
-            else board_result = UCS(*board);
+            if(doOrder){
+                auto all = OrderedSearch(*board, 1, heuristic, k);
+                board_result = all.first;
+                iteration = all.second;
+            }   
+            else{
+                auto all = UCS(*board);
+                board_result = all.first;
+                iteration = all.second;
+            }
             break;
         case 2:
-            if(doOrder)board_result = OrderedSearch(*board, 2, heuristic, k);
-            else board_result = GBFS(*board, heuristic);
+            if(doOrder){
+                auto all = OrderedSearch(*board, 2, heuristic, k);
+                board_result = all.first;
+                iteration = all.second;
+            }   
+            else{
+                auto all = GBFS(*board, heuristic);
+                board_result = all.first;
+                iteration = all.second;
+            }
             break;
         case 3:
-            if(doOrder)board_result = OrderedSearch(*board, 3, heuristic, k);
-            else board_result = BFS(*board);
+            if(doOrder){
+                auto all = OrderedSearch(*board, 3, heuristic, k);
+                board_result = all.first;
+                iteration = all.second;
+            }   
+            else{
+                auto all = BFS(*board);
+                board_result = all.first;
+                iteration = all.second;
+            }
             break;
         case 4:
-            if(doOrder)board_result = OrderedSearch(*board, 4, heuristic, k);
-            else board_result = BeamSearch(*board, heuristic, k);
+            if(doOrder){
+                auto all = OrderedSearch(*board, 4, heuristic, k);
+                board_result = all.first;
+                iteration = all.second;
+            }   
+            else{
+                auto all = BeamSearch(*board, heuristic, k);
+                board_result = all.first;
+                iteration = all.second;
+            }
             break;
-            
-            {auto allResult = ASTAR(*board,heuristic);
-            board_result = allResult.first;
-            iteration = allResult.second;
-            break;}
-        case 1:
-            {auto allResult = UCS(*board);
-            board_result = allResult.first;
-            iteration = allResult.second;
-            break;}
-        case 2:
-            {auto allResult = GBFS(*board, heuristic);
-            board_result = allResult.first;
-            iteration = allResult.second;
-            break;}
-        case 3:
-            {auto allResult = BFS(*board);
-            board_result = allResult.first;
-            iteration = allResult.second;
-            break;}
-        case 4:
-            {auto allResult = BeamSearch(*board, heuristic, k);
-            board_result = allResult.first;
-            iteration = allResult.second;
-            break;}
     }
     auto end_time = std::chrono::high_resolution_clock::now();
     solve_time_ms = std::chrono::duration<double, std::milli>(end_time - start_time).count();
@@ -303,7 +318,7 @@ namespace renderer {
             float button_height = ImGui::GetFrameHeight();
             float current_y = ImGui::GetCursorPosY();
             float padding_y = ImGui::GetStyle().WindowPadding.y;
-            float target_y = window_height - 3*text_height - button_height - padding_y;
+            float target_y = window_height - 4*text_height - button_height - padding_y;
 
             // Generate file name to include config, algorithm, heuristic, and other configuration
             std::string fileName = cp.configFileName;
@@ -339,6 +354,7 @@ namespace renderer {
             }
             ImGui::Text("Saved solution will go to test/%s", fileName.c_str());
             ImGui::Text("Solved in %.3f ms", cp.solve_time_ms);
+            ImGui::Text("Total iteration: %d", cp.iteration.first);
             ImGui::Text("Cost: %d", cp.board_result.first);
         }
         ImGui::End();

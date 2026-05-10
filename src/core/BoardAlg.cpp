@@ -353,7 +353,7 @@ std::pair<std::pair<int, std::vector<Direction>>, std::pair<int, std::vector<Dir
     return {{-1, {}}, {-1, {}}};
 }
 
-std::pair<int, std::vector<Direction>> OrderedSearch(const Board& b, int algorithm, int heuristic, size_t k){
+std::pair<std::pair<int, std::vector<Direction>>, std::pair<int, std::vector<Direction>>> OrderedSearch(const Board& b, int algorithm, int heuristic, size_t k){
     std::vector<std::pair<int, int>> goals(b.panjang*b.lebar,std::pair(-1,-1));
     int trueGoal = 0;
     for(int i = 0; i<b.panjang; ++i){
@@ -368,11 +368,12 @@ std::pair<int, std::vector<Direction>> OrderedSearch(const Board& b, int algorit
 
     int goals_consumed = 0;
     int totalCost = 0;
+    int totalIteration = 0;
     std::vector<Direction> combinedPath;
     Board* copyb  = Board::create(b.panjang,b.lebar);
     *copyb = b;
     while(goals_consumed<=trueGoal){
-        std::pair<int, std::vector<Direction>> temp_result;
+        std::pair<std::pair<int, std::vector<Direction>>, std::pair<int, std::vector<Direction>>> temp_result;
         
         copyb->winX = goals[goals_consumed].first;
         copyb->winY = goals[goals_consumed].second;
@@ -383,16 +384,17 @@ std::pair<int, std::vector<Direction>> OrderedSearch(const Board& b, int algorit
             case 3: temp_result = BFS(*copyb); break;
             case 4: temp_result = BeamSearch(*copyb,heuristic,k); break;
         }
-        if(temp_result.first==-1){delete copyb; return {-1,{}};}
+        if(temp_result.first.first==-1){delete copyb; return {{-1,{}},{-1,{}}};}
         copyb->pinX = goals[goals_consumed].first;
         copyb->pinY = goals[goals_consumed].second;
         copyb->ord++;
-        totalCost += temp_result.first;
-        combinedPath.insert(combinedPath.end(),temp_result.second.begin(),temp_result.second.end());
+        totalCost += temp_result.first.first;
+        totalIteration += temp_result.second.first;
+        combinedPath.insert(combinedPath.end(),temp_result.first.second.begin(),temp_result.first.second.end());
         goals_consumed++;
     }
     delete copyb;
-    return {totalCost, combinedPath};
+    return {{totalCost, combinedPath},{totalIteration,{}}};
 }
 
 
