@@ -1,13 +1,3 @@
-===ITERASI===
-Iterasi 0, solusi sementara:  (cost: 0)
-Iterasi 1, solusi sementara: L (cost: 8)
-Iterasi 2, solusi sementara: U (cost: 24)
-Iterasi 3, solusi sementara: UR (cost: 40)
-Iterasi 4, solusi sementara: URD (cost: 48)
-Iterasi 5, solusi sementara: URDL (cost: 87)
-Iterasi 6, solusi sementara: URDLD (cost: 95)
-
-===SOLUSI====
 Solusi Yang Ditemukan : URDLD
 Cost dari solusi : 95
 
@@ -71,5 +61,5 @@ X.X..X.X
 XZXXXXXX
 XXXXXXXX
 
-Waktu eksekusi: 0.422663 ms
+Waktu eksekusi: 0.05195 ms
 Banyak iterasi yang dilakukan: 7 iterasi
