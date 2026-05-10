@@ -18,7 +18,7 @@ private:
     int k;
     
     std::pair<int, std::vector<Direction>> board_result;
-    std::pair<int, std::vector<Direction>> iteration;
+    std::pair<int, std::vector<std::pair<int, std::vector<Direction>>>> iteration;
     std::vector<std::pair<int, int>> saved_pin_pos;
     size_t result_idx;
     
@@ -28,6 +28,7 @@ public:
     double solve_time_ms = -1.0;
     Board* board;
     ControlPanel();
+    bool doOrdered;
     int algorithm; //0=UCS, 1=A*, 2=GBFS 
     int heuristic;
     std::string configFileName;
@@ -39,7 +40,8 @@ public:
     void mundur();
     void reset();
 
-    void saveSolution(std::string fileName);
+    bool includeIteration;
+    void saveSolution(std::string fileName, bool includeIteration);
 
 };
     

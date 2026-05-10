@@ -26,6 +26,7 @@ public:
     SearchNode(int px = 0, int py = 0, int po = 0): x(px), y(py), ord(po) {}
 
     bool operator==(const SearchNode& rhs) const {
+        if(ord == -1 || rhs.ord == -1) return x == rhs.x && y == rhs.y;
         return x == rhs.x && y == rhs.y && ord == rhs.ord;
     }
 };
@@ -47,12 +48,11 @@ struct Neighbor {
     }
 };
 
-std::pair<std::pair<int, std::vector<Direction>>, std::pair<int, std::vector<Direction>>> UCS(const Board& board);
-std::pair<std::pair<int, std::vector<Direction>>, std::pair<int, std::vector<Direction>>> GBFS(const Board& board, int heuristic);
-std::pair<std::pair<int, std::vector<Direction>>, std::pair<int, std::vector<Direction>>> ASTAR(const Board& board, int heuristic);
-std::pair<std::pair<int, std::vector<Direction>>, std::pair<int, std::vector<Direction>>> BFS(const Board& board);
-std::pair<std::pair<int, std::vector<Direction>>, std::pair<int, std::vector<Direction>>> BeamSearch(const Board& board, int heuristic, size_t k);
-std::pair<std::pair<int, std::vector<Direction>>, std::pair<int, std::vector<Direction>>> OrderedSearch(const Board&, int algorithm,int heuristic, size_t k);
+std::pair<std::pair<int, std::vector<Direction>>, std::pair<int, std::vector<std::pair<int, std::vector<Direction>>>>> UCS(const Board& board, bool isOrdered);
+std::pair<std::pair<int, std::vector<Direction>>, std::pair<int, std::vector<std::pair<int, std::vector<Direction>>>>> GBFS(const Board& board, int heuristic, bool isOrdered);
+std::pair<std::pair<int, std::vector<Direction>>, std::pair<int, std::vector<std::pair<int, std::vector<Direction>>>>> ASTAR(const Board& board, int heuristic, bool isOrdered);
+std::pair<std::pair<int, std::vector<Direction>>, std::pair<int, std::vector<std::pair<int, std::vector<Direction>>>>> BFS(const Board& board, bool isOrdered);
+std::pair<std::pair<int, std::vector<Direction>>, std::pair<int, std::vector<std::pair<int, std::vector<Direction>>>>> BeamSearch(const Board& board, int heuristic, bool isOrdered, size_t k);
 double heuristics(SearchNode node, SearchNode goal, int choice);
 double manhattanDistance(SearchNode node, SearchNode goal);
 double euclideanDistance(SearchNode node, SearchNode goal);

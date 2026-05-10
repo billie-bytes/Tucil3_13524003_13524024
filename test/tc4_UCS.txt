@@ -1,5 +1,5 @@
 Solusi Yang Ditemukan : URDRULDR
-Cost dari solusi : 118
+Cost dari solusi : 0
 
 Initial
 .......X..
@@ -109,5 +109,5 @@ STEP 8 : R
 .......ZX.
 ......XX..
 
-Waktu eksekusi: 0.058059 ms
-Banyak iterasi yang dilakukan: 12 iterasi
+Waktu eksekusi: 0.05111 ms
+Banyak iterasi yang dilakukan: 9 iterasi

@@ -15,7 +15,7 @@
 #include <fstream>
 
 ControlPanel::ControlPanel()
-:board(nullptr),algorithm(0),heuristic(0),board_result(-1,{}),result_idx(0),k(50)
+:board(nullptr),algorithm(0),heuristic(0),board_result(-1,{}),result_idx(0),k(50),doOrdered(true),includeIteration(false)
 {
     for(int i =0; i<DIRBUFSIZE; ++i){
         dirbuf[i] = '\0';
@@ -42,34 +42,36 @@ void ControlPanel::solveBoard(){
     auto start_time = std::chrono::high_resolution_clock::now();
     switch(algorithm){
         case 0:
-            {auto all = ASTAR(*board, heuristic);
-            board_result = all.first;
-            iteration = all.second;
-            break;}
+            {
+                auto all = ASTAR(*board, heuristic, doOrdered);
+                board_result = all.first;
+                iteration = all.second;
+                break;
+            }
         case 1:
             {
-                auto all = UCS(*board);
+                auto all = UCS(*board, doOrdered);
                 board_result = all.first;
                 iteration = all.second;
             }
             break;
         case 2:
             {
-                auto all = GBFS(*board, heuristic);
+                auto all = GBFS(*board, heuristic, doOrdered);
                 board_result = all.first;
                 iteration = all.second;
             }
             break;
         case 3:
             {
-                auto all = BFS(*board);
+                auto all = BFS(*board, doOrdered);
                 board_result = all.first;
                 iteration = all.second;
             }
             break;
         case 4:
             {
-                auto all = BeamSearch(*board, heuristic, k);
+                auto all = BeamSearch(*board, heuristic, doOrdered, k);
                 board_result = all.first;
                 iteration = all.second;
             }
@@ -102,36 +104,36 @@ void ControlPanel::reset(){
 
 static void printBoard(Board* board, std::ofstream& outFile){
     for(int i = 0; i < board->panjang; ++i){
-            for(int j = 0; j < board->lebar; ++j){
-                if(i == board->pinX && j == board->pinY){
-                    outFile << 'Z';
-                } else if(i == board->winX && j == board->winY){
-                    outFile << 'O';
-                } else if(board->getMatrix()[i][j] == WALL){
-                    outFile << 'X';
-                } else if(board->getMatrix()[i][j] == LAVA){
-                    outFile << 'L';
-                } else {
-                    bool isNumbered = false;
-                    auto x_it = board->orderedTiles.find(i);
-                    if(x_it != board->orderedTiles.end()){
-                        auto y_it = x_it->second.find(j);
-                        if(y_it != x_it->second.end() && y_it->second != -1){
-                            outFile << y_it->second;
-                            isNumbered = true;
-                        }
-                    }
-                    
-                    if(!isNumbered) {
-                        outFile << '.'; 
+        for(int j = 0; j < board->lebar; ++j){
+            if(i == board->pinX && j == board->pinY){
+                outFile << 'Z';
+            } else if(i == board->winX && j == board->winY){
+                outFile << 'O';
+            } else if(board->getMatrix()[i][j] == WALL){
+                outFile << 'X';
+            } else if(board->getMatrix()[i][j] == LAVA){
+                outFile << 'L';
+            } else {
+                bool isNumbered = false;
+                auto x_it = board->orderedTiles.find(i);
+                if(x_it != board->orderedTiles.end()){
+                    auto y_it = x_it->second.find(j);
+                    if(y_it != x_it->second.end() && y_it->second != -1){
+                        outFile << y_it->second;
+                        isNumbered = true;
                     }
                 }
+                
+                if(!isNumbered) {
+                    outFile << '.'; 
+                }
             }
-            outFile << '\n';
         }
+        outFile << '\n';
+    }
 }
 
-void ControlPanel::saveSolution(std::string fileName){
+void ControlPanel::saveSolution(std::string fileName, bool includeIteration){
     if(board == nullptr || board_result.first == -1) return;
 
     std::ofstream outFile("/app/test/" + fileName);
@@ -142,15 +144,31 @@ void ControlPanel::saveSolution(std::string fileName){
 
     reset();
 
+    if(includeIteration) {
+        outFile << "===ITERASI===\n";
+        for(int i = 0; i < iteration.second.size(); i++) {
+            std::vector<Direction> listDir = iteration.second[i].second;
+            int totalCost = iteration.second[i].first;
+            outFile << "Iterasi " << i << ", solusi sementara: ";
+            for(int j = 0; j < listDir.size(); j++) {
+                Direction d = listDir[j];
+                switch(d){
+                    case Direction::UP:outFile << "L"; break;
+                    case Direction::DOWN:outFile << "R"; break;
+                    case Direction::LEFT:outFile << "U"; break;
+                    case Direction::RIGHT:outFile << "D"; break;
+                }
+            }
+            outFile << " (cost: " << totalCost << ")\n";
+        }
+
+        outFile << "\n===SOLUSI====\n";
+    }
+    
     outFile << "Solusi Yang Ditemukan : ";
     for(int i = 0; i < board_result.second.size(); i++) {
         Direction d = board_result.second[i];
         switch(d){
-            /*
-            Okay, due to the logic on the algorithms, UP is y--, which visually is going to the left
-            in the board.. I know this is stupid but fixing the actual logic would break a lot of stuff
-            so instead I just adjust it here.
-            */
             case Direction::UP:outFile << "L"; break;
             case Direction::DOWN:outFile << "R"; break;
             case Direction::LEFT:outFile << "U"; break;
@@ -211,6 +229,7 @@ namespace renderer {
             std::ifstream config("../configs/" + cp.configFileName);
             cp.loadBoard(config);
         }
+        if(ImGui::Checkbox("Do ordered tiles",&cp.doOrdered));
 
         ImGui::TableNextRow();
         ImGui::TableNextColumn();
@@ -326,8 +345,9 @@ namespace renderer {
                     ImGui::SetCursorPosY(target_y);
                 }
                 if(ImGui::Button("Save Solution")){
-                    cp.saveSolution(fileName);
-                }
+                    cp.saveSolution(fileName, cp.includeIteration);
+                } ImGui::SameLine();
+                if(ImGui::Checkbox("Include iteration",&cp.includeIteration));
                 ImGui::Text("Saved solution will go to test/%s", fileName.c_str());
                 ImGui::Text("Solved in %.3f ms", cp.solve_time_ms);
                 ImGui::Text("Total iteration: %d", cp.iteration.first);

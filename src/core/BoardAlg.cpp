@@ -121,9 +121,10 @@ std::vector<Direction> reconstructPath(std::unordered_map<SearchNode, std::pair<
 }
 
 
-std::pair<std::pair<int, std::vector<Direction>>, std::pair<int, std::vector<Direction>>> UCS(const Board& board){
+std::pair<std::pair<int, std::vector<Direction>>, std::pair<int, std::vector<std::pair<int, std::vector<Direction>>>>> UCS(const Board& board, bool isOrdered){
     SearchNode start(board.pinX, board.pinY, board.ord);
     SearchNode goal(board.winX, board.winY, board.highestOrd+1);
+    if(!isOrdered) goal.ord = -1;
     std::priority_queue<Neighbor, std::vector<Neighbor>, std::greater<Neighbor>> pq;
     std::unordered_map<SearchNode, double, SearchNodeHash> dist;
     std::unordered_map<SearchNode, std::pair<SearchNode, Direction>, SearchNodeHash> parent;
@@ -134,6 +135,7 @@ std::pair<std::pair<int, std::vector<Direction>>, std::pair<int, std::vector<Dir
     dist[start] = 0.0;
 
     int countIterate = 0;
+    std::vector<std::pair<int, std::vector<Direction>>> iteration = {};
 
     while (!pq.empty()) {
 
@@ -143,9 +145,10 @@ std::pair<std::pair<int, std::vector<Direction>>, std::pair<int, std::vector<Dir
 
         SearchNode currentNode = current.node;
         int currentCost = current.totalCost;
+        iteration.push_back({currentCost, reconstructPath(parent, start, currentNode)});
 
         if (currentNode == goal) {
-            return {{currentCost, reconstructPath(parent, start, currentNode)}, {countIterate, {}}};
+            return {{currentCost, reconstructPath(parent, start, currentNode)}, {countIterate, iteration}};
         }
 
         auto expanded = expand(board, currentNode, currentCost);
@@ -162,9 +165,10 @@ std::pair<std::pair<int, std::vector<Direction>>, std::pair<int, std::vector<Dir
     return {{-1, {}}, {-1, {}}};
 }
 
-std::pair<std::pair<int, std::vector<Direction>>, std::pair<int, std::vector<Direction>>> GBFS(const Board& board, int heuristic){
+std::pair<std::pair<int, std::vector<Direction>>, std::pair<int, std::vector<std::pair<int, std::vector<Direction>>>>> GBFS(const Board& board, int heuristic, bool isOrdered){
     SearchNode start(board.pinX, board.pinY, board.ord);
     SearchNode goal(board.winX, board.winY, board.highestOrd+1);
+    if(!isOrdered) goal.ord = -1;
     std::priority_queue<Neighbor, std::vector<Neighbor>, std::greater<Neighbor>> pq;
     std::unordered_map<SearchNode, double, SearchNodeHash> dist;
     std::unordered_map<SearchNode, std::pair<SearchNode, Direction>, SearchNodeHash> parent;
@@ -175,6 +179,7 @@ std::pair<std::pair<int, std::vector<Direction>>, std::pair<int, std::vector<Dir
     dist[start] = 0.0;
 
     int countIterate = 0;
+    std::vector<std::pair<int, std::vector<Direction>>> iteration = {};
 
     while (!pq.empty()) {
 
@@ -184,9 +189,10 @@ std::pair<std::pair<int, std::vector<Direction>>, std::pair<int, std::vector<Dir
 
         SearchNode currentNode = current.node;
         int currentCost = current.totalCost;
+        iteration.push_back({currentCost, reconstructPath(parent, start, currentNode)});
 
         if (currentNode == goal) {
-            return {{currentCost, reconstructPath(parent, start, currentNode)}, {countIterate, {}}};
+            return {{currentCost, reconstructPath(parent, start, currentNode)}, {countIterate, iteration}};
         }
 
         auto expanded = expand(board, currentNode, currentCost);
@@ -204,9 +210,10 @@ std::pair<std::pair<int, std::vector<Direction>>, std::pair<int, std::vector<Dir
     return {{-1, {}}, {-1, {}}};
 }
 
-std::pair<std::pair<int, std::vector<Direction>>, std::pair<int, std::vector<Direction>>> ASTAR(const Board& board, int heuristic){
+std::pair<std::pair<int, std::vector<Direction>>, std::pair<int, std::vector<std::pair<int, std::vector<Direction>>>>> ASTAR(const Board& board, int heuristic, bool isOrdered){
     SearchNode start(board.pinX, board.pinY, board.ord);
     SearchNode goal(board.winX, board.winY, board.highestOrd+1);
+    if(!isOrdered) goal.ord = -1;
     std::priority_queue<Neighbor, std::vector<Neighbor>, std::greater<Neighbor>> pq;
     std::unordered_map<SearchNode, double, SearchNodeHash> dist;
     std::unordered_map<SearchNode, std::pair<SearchNode, Direction>, SearchNodeHash> parent;
@@ -217,6 +224,7 @@ std::pair<std::pair<int, std::vector<Direction>>, std::pair<int, std::vector<Dir
     dist[start] = 0.0;
 
     int countIterate = 0;
+    std::vector<std::pair<int, std::vector<Direction>>> iteration = {};
 
     while (!pq.empty()) {
 
@@ -226,9 +234,10 @@ std::pair<std::pair<int, std::vector<Direction>>, std::pair<int, std::vector<Dir
 
         SearchNode currentNode = current.node;
         int currentCost = current.totalCost;
+        iteration.push_back({currentCost, reconstructPath(parent, start, currentNode)});
 
         if (currentNode == goal) {
-            return {{currentCost, reconstructPath(parent, start, currentNode)}, {countIterate, {}}};
+            return {{currentCost, reconstructPath(parent, start, currentNode)}, {countIterate, iteration}};
         }
 
         auto expanded = expand(board, currentNode, currentCost);
@@ -246,13 +255,14 @@ std::pair<std::pair<int, std::vector<Direction>>, std::pair<int, std::vector<Dir
     return {{-1, {}}, {-1, {}}};
 }
 
-std::pair<std::pair<int, std::vector<Direction>>, std::pair<int, std::vector<Direction>>> BFS(const Board& board){
+std::pair<std::pair<int, std::vector<Direction>>, std::pair<int, std::vector<std::pair<int, std::vector<Direction>>>>> BFS(const Board& board, bool isOrdered){
     /*
     This is just.. BFS I guess. But an interesting result is that it
     optimizes the number of moves, not the total cost
     */
     SearchNode start(board.pinX, board.pinY, board.ord);
     SearchNode goal(board.winX, board.winY, board.highestOrd+1);
+    if(!isOrdered) goal.ord = -1;
     std::queue<Neighbor> q;
     std::unordered_set<SearchNode, SearchNodeHash> visited;
     std::unordered_map<SearchNode, std::pair<SearchNode, Direction>, SearchNodeHash> parent;
@@ -260,6 +270,7 @@ std::pair<std::pair<int, std::vector<Direction>>, std::pair<int, std::vector<Dir
     visited.insert(start);
 
     int countIterate = 0;
+    std::vector<std::pair<int, std::vector<Direction>>> iteration = {};
 
     while (!q.empty()) {
         
@@ -269,8 +280,9 @@ std::pair<std::pair<int, std::vector<Direction>>, std::pair<int, std::vector<Dir
 
         SearchNode currentNode = current.node;
         int currentCost = current.totalCost;
+        iteration.push_back({currentCost, reconstructPath(parent, start, currentNode)});
         if (currentNode == goal) {
-            return {{currentCost, reconstructPath(parent, start, currentNode)}, {countIterate, {}}};
+            return {{currentCost, reconstructPath(parent, start, currentNode)}, {countIterate, iteration}};
         }
 
         auto expanded = expand(board, currentNode, currentCost);
@@ -287,9 +299,10 @@ std::pair<std::pair<int, std::vector<Direction>>, std::pair<int, std::vector<Dir
     return {{-1, {}}, {-1, {}}};
 }
 
-std::pair<std::pair<int, std::vector<Direction>>, std::pair<int, std::vector<Direction>>> BeamSearch(const Board& board, int heuristic, size_t k = 50){
+std::pair<std::pair<int, std::vector<Direction>>, std::pair<int, std::vector<std::pair<int, std::vector<Direction>>>>> BeamSearch(const Board& board, int heuristic, bool isOrdered, size_t k = 50){
     SearchNode start(board.pinX, board.pinY, board.ord);
     SearchNode goal(board.winX, board.winY, board.highestOrd+1);
+    if(!isOrdered) goal.ord = -1;
     
     /*
     Cuz this algorithm is basically A* but limits the nodes considered into a specified
@@ -307,15 +320,17 @@ std::pair<std::pair<int, std::vector<Direction>>, std::pair<int, std::vector<Dir
     dist[start] = 0.0;
 
     int countIterate = 0;
+    std::vector<std::pair<int, std::vector<Direction>>> iteration = {};
 
     while (!currentLevel.empty()) {
-        countIterate++;
         std::vector<Neighbor> nextLevel;
         for (const Neighbor& current : currentLevel) {
+            countIterate++;
             SearchNode currentNode = current.node;
             int currentCost = current.totalCost;
+            iteration.push_back({currentCost, reconstructPath(parent, start, currentNode)});
             if (currentNode == goal) {
-                return {{currentCost, reconstructPath(parent, start, currentNode)}, {countIterate, {}}};
+                return {{currentCost, reconstructPath(parent, start, currentNode)}, {countIterate, iteration}};
             }
 
             auto expanded = expand(board, currentNode, currentCost);

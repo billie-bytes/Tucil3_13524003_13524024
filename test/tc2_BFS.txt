@@ -1,85 +1,65 @@
-Solusi Yang Ditemukan : URULDLD
-Cost dari solusi : 112
+Solusi Yang Ditemukan : URDLD
+Cost dari solusi : 95
 
 Initial
 XXXXXXXX
-X...X2.X
-X..X0.1X
-X.L....X
-XX4..3LX
-X.O.ZX.X
-XXXXXXXX
+X...X.LX
+X..X...X
+X......X
+X..X..XX
+X.X.ZX.X
+XOXXXXXX
 XXXXXXXX
 
 STEP 1 : U
 XXXXXXXX
-X...X2.X
-X..XZ.1X
-X.L....X
-XX4..3LX
-X.O..X.X
-XXXXXXXX
+X...X.LX
+X..XZ..X
+X......X
+X..X..XX
+X.X..X.X
+XOXXXXXX
 XXXXXXXX
 
 STEP 2 : R
 XXXXXXXX
-X...X2.X
-X..X0.ZX
-X.L....X
-XX4..3LX
-X.O..X.X
-XXXXXXXX
+X...X.LX
+X..X..ZX
+X......X
+X..X..XX
+X.X..X.X
+XOXXXXXX
 XXXXXXXX
 
-STEP 3 : U
+STEP 3 : D
 XXXXXXXX
-X...X2ZX
-X..X0.1X
-X.L....X
-XX4..3LX
-X.O..X.X
-XXXXXXXX
+X...X.LX
+X..X...X
+X.....ZX
+X..X..XX
+X.X..X.X
+XOXXXXXX
 XXXXXXXX
 
 STEP 4 : L
 XXXXXXXX
-X...XZ.X
-X..X0.1X
-X.L....X
-XX4..3LX
-X.O..X.X
-XXXXXXXX
+X...X.LX
+X..X...X
+XZ.....X
+X..X..XX
+X.X..X.X
+XOXXXXXX
 XXXXXXXX
 
 STEP 5 : D
 XXXXXXXX
-X...X2.X
-X..X0.1X
-X.L....X
-XX4..ZLX
-X.O..X.X
-XXXXXXXX
-XXXXXXXX
-
-STEP 6 : L
-XXXXXXXX
-X...X2.X
-X..X0.1X
-X.L....X
-XXZ..3LX
-X.O..X.X
-XXXXXXXX
+X...X.LX
+X..X...X
+X......X
+X..X..XX
+X.X..X.X
+XZXXXXXX
 XXXXXXXX
 
-STEP 7 : D
-XXXXXXXX
-X...X2.X
-X..X0.1X
-X.L....X
-XX4..3LX
-X.Z..X.X
-XXXXXXXX
-XXXXXXXX
-
-Waktu eksekusi: 0.052505 ms
-Banyak iterasi yang dilakukan: 16 iterasi
+Waktu eksekusi: 0.050599 ms
+Banyak iterasi yang dilakukan: 7 iterasi

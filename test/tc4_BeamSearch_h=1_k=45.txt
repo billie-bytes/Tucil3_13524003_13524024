@@ -1,5 +1,5 @@
 Solusi Yang Ditemukan : RD
-Cost dari solusi : 1026
+Cost dari solusi : 1
 
 Initial
 .......X..
@@ -37,5 +37,5 @@ STEP 2 : D
 .......ZX.
 ......XX..
 
-Waktu eksekusi: 0.031207 ms
+Waktu eksekusi: 0.048497 ms
 Banyak iterasi yang dilakukan: 3 iterasi
