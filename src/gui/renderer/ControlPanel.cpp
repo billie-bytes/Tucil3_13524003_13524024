@@ -15,7 +15,7 @@
 #include <fstream>
 
 ControlPanel::ControlPanel()
-:board(nullptr),algorithm(0),heuristic(0),board_result(-1,{}),result_idx(0),k(50)
+:board(nullptr),algorithm(0),heuristic(0),board_result(-1,{}),result_idx(0),k(50),doOrder(false)
 {
     for(int i =0; i<DIRBUFSIZE; ++i){
         dirbuf[i] = '\0';
@@ -41,19 +41,24 @@ void ControlPanel::solveBoard(){
     auto start_time = std::chrono::high_resolution_clock::now();
     switch(algorithm){
         case 0:
-            board_result = ASTAR(*board,heuristic);
+            if(doOrder)board_result = OrderedSearch(*board, 0, heuristic, k);
+            else board_result = ASTAR(*board,heuristic);
             break;
         case 1:
-            board_result = UCS(*board);
+            if(doOrder)board_result = OrderedSearch(*board, 1, heuristic, k);
+            else board_result = UCS(*board);
             break;
         case 2:
-            board_result = GBFS(*board, heuristic);
+            if(doOrder)board_result = OrderedSearch(*board, 2, heuristic, k);
+            else board_result = GBFS(*board, heuristic);
             break;
         case 3:
-            board_result = BFS(*board);
+            if(doOrder)board_result = OrderedSearch(*board, 3, heuristic, k);
+            else board_result = BFS(*board);
             break;
         case 4:
-            board_result = BeamSearch(*board, heuristic, k);
+            if(doOrder)board_result = OrderedSearch(*board, 4, heuristic, k);
+            else board_result = BeamSearch(*board, heuristic, k);
             break;
     }
     auto end_time = std::chrono::high_resolution_clock::now();
@@ -196,7 +201,9 @@ namespace renderer {
 
         ImGui::TableNextRow();
         ImGui::TableNextColumn();
-        ImGui::Text("Algorithm Selection");
+        ImGui::Text("Algorithm Selection"); ImGui::SameLine();
+        if(ImGui::Checkbox("Do Ordered Tiles",&cp.doOrder));
+
         ImGui::RadioButton("A*",&cp.algorithm,0);
         ImGui::RadioButton("UCS",&cp.algorithm,1);
         ImGui::RadioButton("GBFS",&cp.algorithm,2);
@@ -222,7 +229,7 @@ namespace renderer {
             cp.heuristic = 0;
         }  
         
-        ImGui::BeginDisabled(cp.algorithm == 0 || cp.algorithm == 2);
+        ImGui::BeginDisabled(cp.algorithm == 0 || cp.algorithm == 2 || cp.algorithm == 4);
         ImGui::RadioButton("None",&cp.heuristic,0); ImGui::SameLine();
         ImGui::EndDisabled();
 

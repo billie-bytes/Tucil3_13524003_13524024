@@ -9,6 +9,19 @@
  * Example: static void helperFunc(){...}
  */
 
+static int getOrder(const Board& b, int x, int y){
+    auto x_it = b.orderedTiles.find(x);
+    if (x_it != b.orderedTiles.end()) {
+        auto y_it = x_it->second.find(y);
+        if (y_it != x_it->second.end()) {
+            if(y_it->second!=-1){
+                return y_it->second;
+            }
+        }
+    }
+    return -1;
+}
+
 static std::vector<Neighbor> expand(const Board& board, const SearchNode& current, double currentCost) {
     std::vector<Neighbor> neighbors;
 
@@ -331,6 +344,47 @@ std::pair<int, std::vector<Direction>> BeamSearch(const Board& board, int heuris
     return {-1, {}};
 }
 
+std::pair<int, std::vector<Direction>> OrderedSearch(const Board& b, int algorithm, int heuristic, size_t k){
+    std::vector<std::pair<int, int>> goals(b.panjang*b.lebar,std::pair(-1,-1));
+    int trueGoal = 0;
+    for(int i = 0; i<b.panjang; ++i){
+        for(int j = 0; j<b.lebar; ++j){
+            if(getOrder(b,i,j)!=-1){
+                goals[getOrder(b,i,j)] = {i,j};
+                trueGoal++;
+            }
+        }
+    }
+    goals[trueGoal] = {b.winX,b.winY};
+
+    int goals_consumed = 0;
+    int totalCost = 0;
+    std::vector<Direction> combinedPath;
+    Board* copyb  = Board::create(b.panjang,b.lebar);
+    *copyb = b;
+    while(goals_consumed<=trueGoal){
+        std::pair<int, std::vector<Direction>> temp_result;
+        
+        copyb->winX = goals[goals_consumed].first;
+        copyb->winY = goals[goals_consumed].second;
+        switch (algorithm){
+            case 0: temp_result = ASTAR(*copyb,heuristic); break;
+            case 1: temp_result = UCS(*copyb); break;
+            case 2: temp_result = GBFS(*copyb,heuristic); break;
+            case 3: temp_result = BFS(*copyb); break;
+            case 4: temp_result = BeamSearch(*copyb,heuristic,k); break;
+        }
+        if(temp_result.first==-1){delete copyb; return {-1,{}};}
+        copyb->pinX = goals[goals_consumed].first;
+        copyb->pinY = goals[goals_consumed].second;
+        copyb->ord++;
+        totalCost += temp_result.first;
+        combinedPath.insert(combinedPath.end(),temp_result.second.begin(),temp_result.second.end());
+        goals_consumed++;
+    }
+    delete copyb;
+    return {totalCost, combinedPath};
+}
 
 
 double heuristics(SearchNode node, SearchNode goal, int choice) {

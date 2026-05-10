@@ -24,6 +24,7 @@ private:
 
 
 public:
+    bool doOrder;
     double solve_time_ms = -1.0;
     Board* board;
     ControlPanel();

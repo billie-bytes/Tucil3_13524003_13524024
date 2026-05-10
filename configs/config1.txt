@@ -1,9 +1,9 @@
 7 7
 XXXXXXX
-X0****X
+X0***1X
 X**X**X
 X****OX
-X1***LX
+X****LX
 XZ**X*X
 XXXXXXX
 999 999 999 999 999 999 999
