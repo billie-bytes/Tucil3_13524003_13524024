@@ -123,7 +123,7 @@ std::vector<Direction> reconstructPath(std::unordered_map<SearchNode, std::pair<
 
 std::pair<std::pair<int, std::vector<Direction>>, std::pair<int, std::vector<Direction>>> UCS(const Board& board){
     SearchNode start(board.pinX, board.pinY, board.ord);
-    SearchNode goal(board.winX, board.winY, 0);
+    SearchNode goal(board.winX, board.winY, board.highestOrd+1);
     std::priority_queue<Neighbor, std::vector<Neighbor>, std::greater<Neighbor>> pq;
     std::unordered_map<SearchNode, double, SearchNodeHash> dist;
     std::unordered_map<SearchNode, std::pair<SearchNode, Direction>, SearchNodeHash> parent;
@@ -164,7 +164,7 @@ std::pair<std::pair<int, std::vector<Direction>>, std::pair<int, std::vector<Dir
 
 std::pair<std::pair<int, std::vector<Direction>>, std::pair<int, std::vector<Direction>>> GBFS(const Board& board, int heuristic){
     SearchNode start(board.pinX, board.pinY, board.ord);
-    SearchNode goal(board.winX, board.winY, 0);
+    SearchNode goal(board.winX, board.winY, board.highestOrd+1);
     std::priority_queue<Neighbor, std::vector<Neighbor>, std::greater<Neighbor>> pq;
     std::unordered_map<SearchNode, double, SearchNodeHash> dist;
     std::unordered_map<SearchNode, std::pair<SearchNode, Direction>, SearchNodeHash> parent;
@@ -206,7 +206,7 @@ std::pair<std::pair<int, std::vector<Direction>>, std::pair<int, std::vector<Dir
 
 std::pair<std::pair<int, std::vector<Direction>>, std::pair<int, std::vector<Direction>>> ASTAR(const Board& board, int heuristic){
     SearchNode start(board.pinX, board.pinY, board.ord);
-    SearchNode goal(board.winX, board.winY, 0);
+    SearchNode goal(board.winX, board.winY, board.highestOrd+1);
     std::priority_queue<Neighbor, std::vector<Neighbor>, std::greater<Neighbor>> pq;
     std::unordered_map<SearchNode, double, SearchNodeHash> dist;
     std::unordered_map<SearchNode, std::pair<SearchNode, Direction>, SearchNodeHash> parent;
@@ -252,7 +252,7 @@ std::pair<std::pair<int, std::vector<Direction>>, std::pair<int, std::vector<Dir
     optimizes the number of moves, not the total cost
     */
     SearchNode start(board.pinX, board.pinY, board.ord);
-    SearchNode goal(board.winX, board.winY, 0);
+    SearchNode goal(board.winX, board.winY, board.highestOrd+1);
     std::queue<Neighbor> q;
     std::unordered_set<SearchNode, SearchNodeHash> visited;
     std::unordered_map<SearchNode, std::pair<SearchNode, Direction>, SearchNodeHash> parent;
@@ -289,7 +289,7 @@ std::pair<std::pair<int, std::vector<Direction>>, std::pair<int, std::vector<Dir
 
 std::pair<std::pair<int, std::vector<Direction>>, std::pair<int, std::vector<Direction>>> BeamSearch(const Board& board, int heuristic, size_t k = 50){
     SearchNode start(board.pinX, board.pinY, board.ord);
-    SearchNode goal(board.winX, board.winY, 0);
+    SearchNode goal(board.winX, board.winY, board.highestOrd+1);
     
     /*
     Cuz this algorithm is basically A* but limits the nodes considered into a specified

@@ -32,6 +32,7 @@ public:
     int winX;
     int winY;
     int ord;
+    int highestOrd;
     void placeWall(int x, int y);
     void placeLava(int x, int y);
     void placeValue(int x, int y, int val);

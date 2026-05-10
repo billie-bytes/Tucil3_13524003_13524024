@@ -26,7 +26,7 @@ public:
     SearchNode(int px = 0, int py = 0, int po = 0): x(px), y(py), ord(po) {}
 
     bool operator==(const SearchNode& rhs) const {
-        return x == rhs.x && y == rhs.y;
+        return x == rhs.x && y == rhs.y && ord == rhs.ord;
     }
 };
 

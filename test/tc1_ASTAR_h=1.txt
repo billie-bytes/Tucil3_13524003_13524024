@@ -1,0 +1,77 @@
+Solusi Yang Ditemukan : URLDRUR
+Cost dari solusi : 102
+
+Initial
+XXXXXXX
+X0...1X
+X..X..X
+X....OX
+X....LX
+XZ..X.X
+XXXXXXX
+
+STEP 1 : U
+XXXXXXX
+XZ...1X
+X..X..X
+X....OX
+X....LX
+X...X.X
+XXXXXXX
+
+STEP 2 : R
+XXXXXXX
+X0...ZX
+X..X..X
+X....OX
+X....LX
+X...X.X
+XXXXXXX
+
+STEP 3 : L
+XXXXXXX
+XZ...1X
+X..X..X
+X....OX
+X....LX
+X...X.X
+XXXXXXX
+
+STEP 4 : D
+XXXXXXX
+X0...1X
+X..X..X
+X....OX
+X....LX
+XZ..X.X
+XXXXXXX
+
+STEP 5 : R
+XXXXXXX
+X0...1X
+X..X..X
+X....OX
+X....LX
+X..ZX.X
+XXXXXXX
+
+STEP 6 : U
+XXXXXXX
+X0...1X
+X..X..X
+X..Z.OX
+X....LX
+X...X.X
+XXXXXXX
+
+STEP 7 : R
+XXXXXXX
+X0...1X
+X..X..X
+X....ZX
+X....LX
+X...X.X
+XXXXXXX
+
+Waktu eksekusi: 0.113001 ms
+Banyak iterasi yang dilakukan: 17 iterasi

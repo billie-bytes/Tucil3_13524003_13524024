@@ -1,0 +1,85 @@
+Solusi Yang Ditemukan : URULDLD
+Cost dari solusi : 112
+
+Initial
+XXXXXXXX
+X...X2.X
+X..X0.1X
+X.L....X
+XX4..3LX
+X.O.ZX.X
+XXXXXXXX
+XXXXXXXX
+
+STEP 1 : U
+XXXXXXXX
+X...X2.X
+X..XZ.1X
+X.L....X
+XX4..3LX
+X.O..X.X
+XXXXXXXX
+XXXXXXXX
+
+STEP 2 : R
+XXXXXXXX
+X...X2.X
+X..X0.ZX
+X.L....X
+XX4..3LX
+X.O..X.X
+XXXXXXXX
+XXXXXXXX
+
+STEP 3 : U
+XXXXXXXX
+X...X2ZX
+X..X0.1X
+X.L....X
+XX4..3LX
+X.O..X.X
+XXXXXXXX
+XXXXXXXX
+
+STEP 4 : L
+XXXXXXXX
+X...XZ.X
+X..X0.1X
+X.L....X
+XX4..3LX
+X.O..X.X
+XXXXXXXX
+XXXXXXXX
+
+STEP 5 : D
+XXXXXXXX
+X...X2.X
+X..X0.1X
+X.L....X
+XX4..ZLX
+X.O..X.X
+XXXXXXXX
+XXXXXXXX
+
+STEP 6 : L
+XXXXXXXX
+X...X2.X
+X..X0.1X
+X.L....X
+XXZ..3LX
+X.O..X.X
+XXXXXXXX
+XXXXXXXX
+
+STEP 7 : D
+XXXXXXXX
+X...X2.X
+X..X0.1X
+X.L....X
+XX4..3LX
+X.Z..X.X
+XXXXXXXX
+XXXXXXXX
+
+Waktu eksekusi: 0.059841 ms
+Banyak iterasi yang dilakukan: 16 iterasi

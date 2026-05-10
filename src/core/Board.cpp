@@ -3,7 +3,7 @@
 #include <string>
 #include <cctype>
 #include <fstream>
-Board::Board(int panjang, int lebar):panjang(panjang),lebar(lebar),ord(0),winX(-1),winY(-1){
+Board::Board(int panjang, int lebar):panjang(panjang),lebar(lebar),ord(0),highestOrd(-1),winX(-1),winY(-1){
     matrix = new int*[panjang];
     for(int i = 0; i<panjang; i++){
         matrix[i]=new int[lebar]();
@@ -146,6 +146,7 @@ Board* Board::create(std::ifstream& config){
                 if(std::isdigit(tile)){
                     int order = tile - '0';
                     board->orderedTiles[i][j] = order;
+                    if(order > board->highestOrd) board->highestOrd = order;
                 } else {
                     board->orderedTiles[i][j] = -1;
                 }

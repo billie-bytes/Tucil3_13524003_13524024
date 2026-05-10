@@ -243,7 +243,7 @@ namespace renderer {
         ImGui::TableNextRow();
         ImGui::TableNextColumn();
         ImGui::Text("Algorithm Selection"); ImGui::SameLine();
-        if(ImGui::Checkbox("Do Ordered Tiles",&cp.doOrder));
+        if(ImGui::Checkbox("Do Ordered Tiles as Partial Goal",&cp.doOrder));
 
         ImGui::RadioButton("A*",&cp.algorithm,0);
         ImGui::RadioButton("UCS",&cp.algorithm,1);
