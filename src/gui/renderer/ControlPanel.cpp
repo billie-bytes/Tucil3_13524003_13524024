@@ -112,10 +112,10 @@ static void printBoard(Board* board, std::ofstream& outFile){
         }
 }
 
-void ControlPanel::saveSolution(){
+void ControlPanel::saveSolution(std::string fileName){
     if(board == nullptr || board_result.first == -1) return;
 
-    std::ofstream outFile("solution.txt");
+    std::ofstream outFile("/app/test/" + fileName);
     if(!outFile.is_open()){
         printf("Failed to open solution.txt\n");
         return;
@@ -123,8 +123,27 @@ void ControlPanel::saveSolution(){
 
     reset();
 
-    outFile << "initial board\n";
+    outFile << "Solusi Yang Ditemukan : ";
+    for(int i = 0; i < board_result.second.size(); i++) {
+        Direction d = board_result.second[i];
+        switch(d){
+            /*
+            Okay, due to the logic on the algorithms, UP is y--, which visually is going to the left
+            in the board.. I know this is stupid but fixing the actual logic would break a lot of stuff
+            so instead I just adjust it here.
+            */
+            case Direction::UP:outFile << "L"; break;
+            case Direction::DOWN:outFile << "R"; break;
+            case Direction::LEFT:outFile << "U"; break;
+            case Direction::RIGHT:outFile << "D"; break;
+        }
+    }
+    outFile << "\n";
+    outFile << "Cost dari solusi : " << board_result.first << "\n\n";
+
+    outFile << "Initial\n";
     printBoard(board, outFile);
+    outFile << "\n";
 
     int step = 1;
     while(result_idx < board_result.second.size()){
@@ -136,19 +155,21 @@ void ControlPanel::saveSolution(){
             in the board.. I know this is stupid but fixing the actual logic would break a lot of stuff
             so instead I just adjust it here.
             */
-            case Direction::UP:dirStr = "LEFT"; break;
-            case Direction::DOWN:dirStr = "RIGHT"; break;
-            case Direction::LEFT:dirStr = "UP"; break;
-            case Direction::RIGHT:dirStr = "DOWN"; break;
+            case Direction::UP:dirStr = "L"; break;
+            case Direction::DOWN:dirStr = "R"; break;
+            case Direction::LEFT:dirStr = "U"; break;
+            case Direction::RIGHT:dirStr = "D"; break;
         }
 
-        outFile << "STEP " << step++ << ": " << dirStr << "\n";
+        outFile << "STEP " << step++ << " : " << dirStr << "\n";
         maju();
         printBoard(board, outFile);
+        outFile << "\n";
     }
 
-    outFile << "\nWAKTU EKSEKUSI: " << solve_time_ms << " ms\n";
-    outFile << "TOTAL COST: " << board_result.first << "\n";
+    outFile << "Waktu eksekusi: " << solve_time_ms << " ms\n";
+    // outFile << "TOTAL COST: " << board_result.first << "\n";
+    outFile << "Banyak iterasi yang dilakukan: " << "[to be added]" << " iterasi\n";
 
     outFile.close();
     reset();
@@ -165,10 +186,11 @@ namespace renderer {
 
         ImGui::TableNextRow();
         ImGui::TableNextColumn();
-        ImGui::InputTextWithHint("##path", "Path relative to executable",cp.dirbuf,IM_ARRAYSIZE(cp.dirbuf));
+        ImGui::InputTextWithHint("##path", "Path from configs folder",cp.dirbuf,IM_ARRAYSIZE(cp.dirbuf));
         ImGui::SameLine();
         if (ImGui::Button("Enter Path",ImVec2(-FLT_MIN, 0.0f))) {
-            std::ifstream config(cp.dirbuf);
+            cp.configFileName = cp.dirbuf;
+            std::ifstream config("../configs/" + cp.configFileName);
             cp.loadBoard(config);
         }
 
@@ -193,14 +215,14 @@ namespace renderer {
         
         ImGui::Text("Heuristic Selection");
 
-        if(cp.algorithm==2&&cp.heuristic==0){ //GBFS harus milih heuristic
+        if((cp.algorithm==0 || cp.algorithm==2 || cp.algorithm == 4) && cp.heuristic==0){ //ASTAR, GBFS, and BeamSearch harus milih heuristic
             cp.heuristic = 1;
         }   
-        if((cp.algorithm==1||cp.algorithm==3)&&cp.heuristic!=0){ //UCS and BFS gblh milih heuristic
+        if((cp.algorithm==1 || cp.algorithm==3)  &&cp.heuristic != 0){ //UCS and BFS gblh milih heuristic
             cp.heuristic = 0;
         }  
         
-        ImGui::BeginDisabled(cp.algorithm == 2);
+        ImGui::BeginDisabled(cp.algorithm == 0 || cp.algorithm == 2);
         ImGui::RadioButton("None",&cp.heuristic,0); ImGui::SameLine();
         ImGui::EndDisabled();
 
@@ -250,14 +272,40 @@ namespace renderer {
             float current_y = ImGui::GetCursorPosY();
             float padding_y = ImGui::GetStyle().WindowPadding.y;
             float target_y = window_height - 3*text_height - button_height - padding_y;
+
+            // Generate file name to include config, algorithm, heuristic, and other configuration
+            std::string fileName = cp.configFileName;
+            int pos = fileName.find(".txt");
+            if(pos < fileName.size()) {
+                fileName = fileName.substr(0, pos);
+            }
+            fileName += "_";
+            switch (cp.algorithm){
+            case 0:
+                fileName += "ASTAR_h=" + std::to_string(cp.heuristic);
+                break;
+            case 1:
+                fileName += "UCS";
+                break;
+            case 2:
+                fileName += "BGFS_h=" + std::to_string(cp.heuristic);
+                break;
+            case 3:
+                fileName += "BFS";
+                break;
+            case 4:
+                fileName += "BeamSearch_h=" + std::to_string(cp.heuristic) + "_k=" + std::to_string(cp.k);
+                break;
+            }
+            fileName += ".txt";
             
             if (target_y > current_y) {
                 ImGui::SetCursorPosY(target_y);
             }
             if(ImGui::Button("Save Solution")){
-                cp.saveSolution();
+                cp.saveSolution(fileName);
             }
-            ImGui::Text("Saved solution will go to ./solution.txt");
+            ImGui::Text("Saved solution will go to test/%s", fileName.c_str());
             ImGui::Text("Solved in %.3f ms", cp.solve_time_ms);
             ImGui::Text("Cost: %d", cp.board_result.first);
         }

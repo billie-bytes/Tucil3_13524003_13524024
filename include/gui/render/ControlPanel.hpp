@@ -29,6 +29,7 @@ public:
     ControlPanel();
     int algorithm; //0=UCS, 1=A*, 2=GBFS 
     int heuristic;
+    std::string configFileName;
     void loadBoard(std::ifstream& config);
     void solveBoard();
 
@@ -37,7 +38,7 @@ public:
     void mundur();
     void reset();
 
-    void saveSolution();
+    void saveSolution(std::string fileName);
 
 };
     

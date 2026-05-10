@@ -6,4 +6,6 @@ docker run -it --rm \
     -e XDG_RUNTIME_DIR=/mnt/wslg/runtime-dir \
     -v /tmp/.X11-unix:/tmp/.X11-unix \
     -v /mnt/wslg:/mnt/wslg \
+    -v $(pwd)/configs:/app/configs \
+    -v $(pwd)/test:/app/test \
     iceslide
