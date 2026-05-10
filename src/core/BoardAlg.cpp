@@ -54,6 +54,11 @@ static std::vector<Neighbor> expand(const Board& board, const SearchNode& curren
                 case Direction::DOWN: checkY++; break;
             }
 
+            if(checkX < 0 || checkX >= board.panjang || checkY < 0 || checkY >= board.lebar) {
+                slideCost = -1;
+                break;
+            }
+
             if (matrix[checkX][checkY] == WALL) {
                 break;
             }
