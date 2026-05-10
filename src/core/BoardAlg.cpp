@@ -380,6 +380,9 @@ double heuristics(SearchNode node, SearchNode goal, int choice) {
 
     case 2:
         return euclideanDistance(node, goal);
+
+    case 3:
+        return chebyshevDistance(node, goal);
     
     default:
         return 0;
@@ -392,4 +395,8 @@ double manhattanDistance(SearchNode node, SearchNode goal) {
 
 double euclideanDistance(SearchNode node, SearchNode goal) {
     return std::sqrt(std::pow(node.x - goal.x, 2) + std::pow(node.y - goal.y, 2));
+}
+
+double chebyshevDistance(SearchNode node, SearchNode goal) {
+    return double(std::max(std::abs(node.x - goal.x), std::abs(node.y - goal.y)));
 }

@@ -265,8 +265,9 @@ namespace renderer {
         ImGui::EndDisabled();
 
         ImGui::BeginDisabled(cp.algorithm == 1||cp.algorithm==3);
-        ImGui::RadioButton("Manhattan Distance",&cp.heuristic,1); ImGui::SameLine();
-        ImGui::RadioButton("Euclidean Distance",&cp.heuristic,2);
+        ImGui::RadioButton("Manhattan Distance",&cp.heuristic,1);
+        ImGui::RadioButton("Euclidean Distance",&cp.heuristic,2); ImGui::SameLine();
+        ImGui::RadioButton("Chebyshev Distance",&cp.heuristic,3);
         ImGui::EndDisabled();
 
         ImGui::BeginDisabled(cp.board==nullptr);
@@ -335,7 +336,7 @@ namespace renderer {
                 switch (cp.algorithm){
                 case 0: fileName += "ASTAR_h=" + std::to_string(cp.heuristic); break;
                 case 1: fileName += "UCS"; break;
-                case 2: fileName += "BGFS_h=" + std::to_string(cp.heuristic); break;
+                case 2: fileName += "GBFS_h=" + std::to_string(cp.heuristic); break;
                 case 3: fileName += "BFS"; break;
                 case 4: fileName += "BeamSearch_h=" + std::to_string(cp.heuristic) + "_k=" + std::to_string(cp.k); break;
                 }

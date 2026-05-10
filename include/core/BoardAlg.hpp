@@ -56,3 +56,4 @@ std::pair<std::pair<int, std::vector<Direction>>, std::pair<int, std::vector<std
 double heuristics(SearchNode node, SearchNode goal, int choice);
 double manhattanDistance(SearchNode node, SearchNode goal);
 double euclideanDistance(SearchNode node, SearchNode goal);
+double chebyshevDistance(SearchNode node, SearchNode goal);

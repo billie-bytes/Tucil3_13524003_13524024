@@ -82,5 +82,5 @@ X1...LX
 X...X.X
 XXXXXXX
 
-Waktu eksekusi: 0.057786 ms
+Waktu eksekusi: 0.233684 ms
 Banyak iterasi yang dilakukan: 15 iterasi
